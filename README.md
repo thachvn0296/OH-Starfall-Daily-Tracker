@@ -13,4 +13,4 @@ This project is a personal-use, browser-based tracker for Once Human daily event
 3. If you want notifications, allow browser notifications when prompted.
 
 ## Credits
-This project is a modified version created for personal use. All original source material and credit remain with the original Once Human Riftwalker tracker at https://tool.oncehumanjp.com/.
+This project is a modified version created for personal use. All original source material and credit remain with the original Once Human Riftwalker tracker at  [https://tool.oncehumanjp.com/](https://tool.oncehumanjp.com/).
