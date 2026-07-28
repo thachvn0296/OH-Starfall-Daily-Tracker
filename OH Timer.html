@@ -14,6 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="Riftwalker Tracker"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;700;900&display=swap');
 *{
     margin:0;
     padding:0;
@@ -28,7 +29,7 @@ body{
 
 body{
     background:#000;
-    font-family:'Orbitron', sans-serif;
+    font-family:'Teko', sans-serif;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -154,7 +155,7 @@ body.bg-off .frame {
     border: 1px solid rgba(0, 255, 255, 0.3);
     border-radius: 10px;
     padding: 9px 14px;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Teko', sans-serif;
     font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
@@ -186,7 +187,7 @@ body.bg-off .frame {
     background: linear-gradient(135deg, rgba(0,255,255,0.15), rgba(0,120,255,0.08));
     border: 1px solid rgba(0,255,255,0.3);
     color: #aeeeff;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Teko', sans-serif;
     font-size: 0.72rem;
     font-weight: 700;
     padding: 8px 14px;
@@ -246,6 +247,7 @@ body.bg-off .frame {
     border: 1px solid rgba(0,238,255,0.3);
     color: #a0f8ff;
     text-shadow: 0 0 8px rgba(0,238,255,0.5);
+    font-family: 'Teko', sans-serif;
     font-size: 0.75rem;
     padding: 8px 10px;
     letter-spacing: 0;
@@ -507,7 +509,7 @@ body.lang-en .counter-title {
     border: 1px solid rgba(180,0,255,0.5);
     background: rgba(40,0,60,0.6);
     color: #d866ff;
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Teko', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     cursor: pointer;
@@ -807,7 +809,7 @@ body.lang-en .counter-title {
     background: none;
     border: none;
     color: rgba(0,255,255,0.6);
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Teko', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     cursor: pointer;
@@ -928,7 +930,7 @@ body.lang-en .counter-title {
     border-radius: 8px;
     padding: 10px 12px;
     color: #fff;
-    font-family: 'Orbitron', monospace, sans-serif;
+    font-family: 'Teko', monospace, sans-serif;
     font-size: 0.8rem;
     outline: none;
     transition: 0.3s;
@@ -1229,12 +1231,13 @@ function applyLanguage() {
     const lang = i18n[currentLang];
     document.documentElement.lang = currentLang;
     
+    const langToggleBtn = document.getElementById("langToggleBtn");
     if (currentLang === "en") {
         document.body.classList.add("lang-en");
-        document.getElementById("langToggleBtn").textContent = "JA";
+        if (langToggleBtn) langToggleBtn.textContent = "JA";
     } else {
         document.body.classList.remove("lang-en");
-        document.getElementById("langToggleBtn").textContent = "EN";
+        if (langToggleBtn) langToggleBtn.textContent = "EN";
     }
 
     document.getElementById("settingsBtn").textContent = lang.btnSettings;
@@ -1481,11 +1484,14 @@ function updateMuteUI() {
    取得できない場合はオフセット0（端末時計）にフォールバックする。
 =================================================== */
 const SUBSCRIBE_URL = 'https://tool.oncehumanjp.com/subscribe.php';
-let serverTimeOffset = 0; // ms。 実時刻 = Date.now() + serverTimeOffset
+const FALLBACK_TIME_API = 'https://worldclockapi.com/api/json/utc/now';
+const SERVER_TIME_CORRECTION_MS = 0;
+let serverTimeOffset = -16000; // ms。 実時刻 = Date.now() + serverTimeOffset
 
 async function syncServerTime(){
+    const t0 = Date.now();
+
     try {
-        const t0 = Date.now();
         // GET/HEADどちらでも良いが、CORSで確実にDateヘッダーが読めるよう
         // 同一オリジン想定のエンドポイントへ軽量リクエストを送る。
         // no-storeでキャッシュからのDateヘッダー誤読を防止。
@@ -1493,31 +1499,52 @@ async function syncServerTime(){
         const t1 = Date.now();
 
         const serverDateHeader = res.headers.get('Date');
-        if (!serverDateHeader) {
-            console.warn('[TimeSync] Dateヘッダーが取得できませんでした。端末時計を使用します。');
-            return;
+        if (serverDateHeader) {
+            const serverTime = new Date(serverDateHeader).getTime();
+            if (!Number.isNaN(serverTime)) {
+                const rtt = t1 - t0;
+                const estimatedServerTimeAtT1 = serverTime + (rtt / 2);
+                const localTimeAtMeasurement = t0 + (rtt / 2);
+
+                serverTimeOffset = estimatedServerTimeAtT1 - localTimeAtMeasurement + SERVER_TIME_CORRECTION_MS;
+                console.log(`[TimeSync] serverTimeOffset = ${serverTimeOffset.toFixed(0)}ms (RTT: ${rtt}ms, correction: ${SERVER_TIME_CORRECTION_MS}ms)`);
+                return;
+            }
+            console.warn('[TimeSync] Dateヘッダーの解析に失敗しました。');
+        } else {
+            console.warn('[TimeSync] Dateヘッダーが取得できませんでした。');
         }
-
-        const serverTime = new Date(serverDateHeader).getTime();
-        if (Number.isNaN(serverTime)) {
-            console.warn('[TimeSync] Dateヘッダーの解析に失敗しました。端末時計を使用します。');
-            return;
-        }
-
-        // 往復にかかった時間(RTT)の半分を通信遅延とみなして補正する。
-        // Dateヘッダーは秒精度のため、サーバー応答時点はt0〜t1の間と仮定し
-        // その中間時刻を基準にすることで誤差を抑える。
-        const rtt = t1 - t0;
-        const estimatedServerTimeAtT1 = serverTime + (rtt / 2);
-        const localTimeAtMeasurement = t0 + (rtt / 2);
-
-        serverTimeOffset = estimatedServerTimeAtT1 - localTimeAtMeasurement;
-
-        console.log(`[TimeSync] serverTimeOffset = ${serverTimeOffset.toFixed(0)}ms (RTT: ${rtt}ms)`);
     } catch (e) {
-        console.warn('[TimeSync] サーバー時刻の取得に失敗しました。端末時計を使用します。', e);
-        // 失敗時はオフセット0のまま＝端末時計にフォールバック
+        console.warn('[TimeSync] subscribe.php 時刻同期に失敗しました。', e);
     }
+
+    // Fallback to a reliable UTC time API for local/off-origin use.
+    try {
+        const fallbackStart = Date.now();
+        const res = await fetch(FALLBACK_TIME_API, { cache: 'no-store' });
+        const fallbackEnd = Date.now();
+        const data = await res.json();
+
+        if (data && typeof data.currentDateTime === 'string') {
+            const serverTime = new Date(data.currentDateTime).getTime();
+            if (!Number.isNaN(serverTime)) {
+                const rtt = fallbackEnd - fallbackStart;
+                const estimatedServerTimeAtT1 = serverTime + (rtt / 2);
+                const localTimeAtMeasurement = fallbackStart + (rtt / 2);
+
+                serverTimeOffset = estimatedServerTimeAtT1 - localTimeAtMeasurement + SERVER_TIME_CORRECTION_MS;
+                console.log(`[TimeSync] fallback serverTimeOffset = ${serverTimeOffset.toFixed(0)}ms (RTT: ${rtt}ms, correction: ${SERVER_TIME_CORRECTION_MS}ms)`);
+                return;
+            }
+            console.warn('[TimeSync] フォールバック時刻APIのタイムスタンプ解析に失敗しました。');
+        } else {
+            console.warn('[TimeSync] フォールバック時刻APIのレスポンスが不正です。');
+        }
+    } catch (e) {
+        console.warn('[TimeSync] フォールバック時刻APIの取得に失敗しました。', e);
+    }
+
+    // 失敗時はオフセット0のまま＝端末時計にフォールバック
 }
 
 /* ===================================================
