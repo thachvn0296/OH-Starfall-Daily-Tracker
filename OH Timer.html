@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-<!-- saved from url=https://tool.oncehumanjp.com/ -->
 <html lang="en"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Once Human Riftwalker Tracker</title>
@@ -1294,10 +1293,10 @@ function showSiteToastNotification(title, text) {
 
     container.appendChild(toast);
 
-    // 微小な遅延を設けて滑らかなアニメーション開始
+    // Add a tiny delay so the animation starts smoothly
     setTimeout(() => toast.classList.add("show"), 50);
 
-    // 5秒後に自動消滅
+    // Auto-dismiss after 5 seconds
     setTimeout(() => {
         toast.classList.remove("show");
         setTimeout(() => toast.remove(), 400);
@@ -1335,16 +1334,16 @@ function sendDiscordWebhookNotification(title, text, colorCode = 5814783) {
 }
 
 /* ===================================================
-   ★MASTER ALERTS BUNDLER (通知の一括処理・多重化)
+   ★MASTER ALERTS BUNDLER (Centralized notification handling)
 =================================================== */
 function executeMasterNotification(title, message, isAbyssEvent = true) {
-    // 1. 本体の電子チャイム音
+    // 1. Play the local chime sound
     playNotificationSound();
 
-    // 2. サイト内ポップアップ（トースト）表示
+    // 2. Show an in-page toast popup
     showSiteToastNotification(title, message);
 
-    // 3. ブラウザ標準プッシュ通知（Notification未対応ブラウザ(iOS Safari等)でもエラーにならないようガード）
+    // 3. Show the browser notification if permission is granted
     if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
         new Notification(title, {
             body: message,
@@ -1352,7 +1351,7 @@ function executeMasterNotification(title, message, isAbyssEvent = true) {
         });
     }
 
-    // 4. Discord Webhook通知 (アビスはシアン系、スカイはパープル・マゼンタ系カラーで色分け)
+    // 4. Send a Discord webhook notification (cyan for abyss, purple/magenta for sky)
     const color = isAbyssEvent ? 61951 : 11796735;
     sendDiscordWebhookNotification(title, message, color);
 }
@@ -1366,8 +1365,8 @@ let isMuted = true;
 let lastNotifiedTimes = {};
 
 function canNotify(triggerKey, jstDate) {
-    // 範囲チェック導入後は「分単位」でキーを管理し、同一分内の重複発火を防ぐ。
-    // 秒単位にすると範囲チェックの複数秒が全てtrueになってしまうため分単位に変更。
+    // Track notifications by minute so repeated triggers in the same minute are ignored.
+    // Using seconds would allow multiple hits within the same range check.
     const timeStr = jstDate.getHours() + ":" + jstDate.getMinutes();
     if (lastNotifiedTimes[triggerKey] === timeStr) {
         return false; 
@@ -1434,7 +1433,7 @@ function getAudioContext() {
 
 function toggleNotificationTrigger(id, key, checked) {
     if (typeof Notification === 'undefined') {
-        // Notification API未対応ブラウザ(iOS Safari等)。サウンド/トースト/Discordは動作するため許可だけ無効化
+        // Browsers without Notification API will skip the permission gate while still allowing sound/toast/Discord.
         localStorage.setItem(key, checked);
         return;
     }
@@ -1445,7 +1444,7 @@ function toggleNotificationTrigger(id, key, checked) {
             } else {
                 document.getElementById(id).checked = false;
                 localStorage.setItem(key, false);
-                alert("ブラウザのプッシュ通知を送るには通知許可が必要です。ブラウザの設定から許可してください。");
+                alert("Browser notification permission is required to send push alerts. Please enable it in your browser settings.");
             }
         });
     } else {
@@ -1478,8 +1477,6 @@ function updateMuteUI() {
 
 /* ===================================================
    LOCAL JST CLOCK
-   The timer uses Japan Standard Time directly so it no longer
-   depends on the external subscription endpoint.
 =================================================== */
 const TIMEZONE = 'Asia/Tokyo';
 let serverTimeOffset = -16000; // ms. Actual time = Date.now() + serverTimeOffset
@@ -1575,12 +1572,12 @@ function updateGravityAbyssTimer(){
     secBox.classList.remove("abyss-finished");
 
     /* ---------------------------------------------------
-       通知ロジック（範囲チェック版）
-       setIntervalのスキップ・バックグラウンド抑制対策として
-       ピンポイント一致（===）から ±2秒の範囲チェックに変更。
-       canNotify() が分単位キーで重複発火を防ぐ。
+       Notification logic (range-based)
+       To avoid missing triggers when setInterval is throttled in the background,
+       the code checks for a small ±2 second window instead of a strict equality check.
+       canNotify() prevents duplicate firings within the same minute.
     --------------------------------------------------- */
-    let secondsToAbyss = -1; // -1 = 通知不要
+    let secondsToAbyss = -1; // -1 = no notification needed
     if (!active) {
         if (current < start) {
             secondsToAbyss = start - current;
@@ -1589,7 +1586,7 @@ function updateGravityAbyssTimer(){
         }
     }
 
-    // アビス：5分前通知（298〜300秒の範囲で検知）
+    // Abyss: 5-minute warning (detected in the 298-300 second range)
     if (secondsToAbyss >= 298 && secondsToAbyss <= 300 && document.getElementById('notifyAbyss5').checked) {
         if (canNotify("abyss5", jst)) {
             executeMasterNotification(
@@ -1599,7 +1596,7 @@ function updateGravityAbyssTimer(){
             );
         }
     }
-    // アビス：1分前通知（58〜60秒の範囲で検知）
+    // Abyss: 1-minute warning (detected in the 58-60 second range)
     if (secondsToAbyss >= 58 && secondsToAbyss <= 60 && document.getElementById('notifyAbyss1').checked) {
         if (canNotify("abyss1", jst)) {
             executeMasterNotification(
@@ -1609,7 +1606,7 @@ function updateGravityAbyssTimer(){
             );
         }
     }
-    // アビス：開始通知（start ±2秒の範囲で検知）
+    // Abyss: start notification (detected within start ±2 seconds)
     if (current >= start && current <= start + 2 && document.getElementById('notifyAbyssBrowser').checked) {
         if (canNotify("abyssStartPush", jst)) {
             executeMasterNotification(
@@ -1620,11 +1617,11 @@ function updateGravityAbyssTimer(){
         }
     }
 
-    // スカイリッパー出現判定ゾーン
+    // Riftwalker spawn check zone
     if (current >= start && current < skyripperStart) {
         const secondsToSky = skyripperStart - current;
 
-        // スカイ：3分前通知（178〜180秒の範囲で検知）
+        // Sky: 3-minute warning (detected in the 178-180 second range)
         if (secondsToSky >= 178 && secondsToSky <= 180 && document.getElementById('notify3min').checked) {
             if (canNotify("sky3", jst)) {
                 executeMasterNotification(
@@ -1634,7 +1631,7 @@ function updateGravityAbyssTimer(){
                 );
             }
         }
-        // スカイ：1分前通知（58〜60秒の範囲で検知）
+        // Sky: 1-minute warning (detected in the 58-60 second range)
         if (secondsToSky >= 58 && secondsToSky <= 60 && document.getElementById('notify1min').checked) {
             if (canNotify("sky1", jst)) {
                 executeMasterNotification(
@@ -1646,7 +1643,7 @@ function updateGravityAbyssTimer(){
         }
     }
     
-    // スカイ：出現通知（skyripperStart ±2秒の範囲で検知）
+    // Sky: spawn notification (detected within skyripperStart ±2 seconds)
     if (current >= skyripperStart && current <= skyripperStart + 2 && document.getElementById('notifyBrowser').checked) {
         if (canNotify("skySpawnPush", jst)) {
             executeMasterNotification(
@@ -1886,7 +1883,7 @@ function loadNotifySettings() {
     isMuted = savedMute === null ? true : savedMute === 'true';
     updateMuteUI();
 
-    // Webhook URLの読み込み
+    // Load the saved webhook URL
     const savedDiscord = localStorage.getItem("abyss_discord_webhook");
     if (savedDiscord) {
         document.getElementById("discordUrlInput").value = savedDiscord;
@@ -1934,20 +1931,17 @@ loadSavedCounts();
 loadSavedLayout();
 loadBackgroundState();
 
-// サーバー時刻と同期してからタイマーを起動する。
-// 同期前は端末時計(offset=0)で即座に1回表示し、
-// 同期完了後に補正済みの値へ更新する。
+// Start the timer after syncing the local clock offset.
+// Show the timer immediately once with the base clock, then update it with the corrected value.
 updateGravityAbyssTimer();
 syncServerTime().then(updateGravityAbyssTimer);
 setInterval(updateGravityAbyssTimer, 1000);
 
-// 長時間開きっぱなしのタブでも時計ドリフトが蓄積しないよう、
-// 10分ごとにサーバー時刻と再同期する。
+// Re-sync the clock every 10 minutes so drift does not accumulate over long sessions.
 setInterval(syncServerTime, 10 * 60 * 1000);
 
-// バックグラウンドタブから復帰したとき即座にタイマーを再チェックする。
-// setIntervalはバックグラウンド中に間引かれるため、
-// 復帰時に通知対象の秒を飛ばしていた場合でも即時補正する。
+// Re-check the timer immediately when the tab becomes visible again.
+// setInterval is throttled in the background, so this helps avoid missing a target second on return.
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
         updateGravityAbyssTimer();
@@ -1963,7 +1957,7 @@ if ('serviceWorker' in navigator) {
 }
 
 /* ===================================================
-   プッシュ通知購読管理
+   PUSH NOTIFICATION SUBSCRIPTION MANAGEMENT
 =================================================== */
 const VAPID_PUBLIC_KEY = 'BFE9lDLWuaFHnq9e5JJEnqnLXFqeELiO_460cjv1EXBBYMPQZLHSQbQ4vKOJZHx_IxXysors3FR_9HNn-KHjQlk';
 
@@ -2004,7 +1998,7 @@ async function togglePushSubscription() {
     const existing = await getPushSubscription();
 
     if (existing) {
-        // 購読解除（ブラウザ側を先に解除してからサーバーのDBを削除）
+        // Unsubscribe first on the browser side, then remove the server-side registration
         await existing.unsubscribe();
         await fetch(SUBSCRIBE_URL, {
             method: 'DELETE',
@@ -2013,7 +2007,7 @@ async function togglePushSubscription() {
         });
         showSiteToastNotification('通知OFF', 'バックグラウンド通知をOFFにしました');
     } else {
-        // 購読登録
+        // Subscribe to push notifications
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') {
             showSiteToastNotification('通知エラー', 'ブラウザの通知許可が必要です');
@@ -2038,7 +2032,7 @@ async function togglePushSubscription() {
     updatePushBtn();
 }
 
-// ページ読み込み時にボタン状態を反映
+// Reflect the current subscription state when the page loads
 updatePushBtn();
 
 </script>
