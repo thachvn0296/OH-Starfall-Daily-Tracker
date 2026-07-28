@@ -1,0 +1,1909 @@
+<!DOCTYPE html>
+
+<!-- saved from url=(0029)https://tool.oncehumanjp.com/ -->
+<html lang="en"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>グラビティアビスタイマー Ver.3.8</title>
+<meta content="#000000" name="theme-color"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<link href="https://tool.oncehumanjp.com/icon-192.png" rel="apple-touch-icon"/>
+<link href="https://tool.oncehumanjp.com/manifest.json" rel="manifest"/>
+<link href="https://fonts.googleapis.com/" rel="preconnect"/>
+<link href="./OH Timer_files/css2" rel="stylesheet"/>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100vh;
+}
+
+body{
+    background:#000;
+    font-family:'Orbitron', sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    overflow-x:hidden;
+    overflow-y:auto;
+    padding: 20px 0;
+}
+
+/* =========================
+   BACKGROUND TOGGLE
+========================= */
+body.bg-off .frame {
+    background-image: none !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 
+        0 0 25px rgba(0,255,255,.10),
+        inset 0 0 30px rgba(255,255,255,.01);
+}
+
+/* =========================
+   TOP CONTROL BUTTONS
+========================= */
+.top-controls {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    left: 14px;
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, rgba(0,255,255,0.15), rgba(0,120,255,0.08));
+    border: 1px solid rgba(0,255,255,0.3);
+    color: #aeeeff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0,255,255,0.5);
+    box-shadow: 0 0 12px rgba(0,255,255,0.1);
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.control-btn:hover {
+    background: linear-gradient(135deg, rgba(0,255,255,0.35), rgba(0,120,255,0.15));
+    box-shadow: 0 0 18px rgba(0,255,255,0.35);
+    color: #fff;
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, rgba(255,0,80,0.15), rgba(150,0,40,0.08));
+    border: 1px solid rgba(255,0,80,0.3);
+    color: #ffb3cc;
+    text-shadow: 0 0 8px rgba(255,0,80,0.5);
+}
+.reset-btn:hover {
+    background: linear-gradient(135deg, rgba(255,0,80,0.35), rgba(150,0,40,0.15));
+    box-shadow: 0 0 18px rgba(255,0,80,0.35);
+}
+
+.lang-btn {
+    background: linear-gradient(135deg, rgba(0,255,150,0.15), rgba(0,150,100,0.08));
+    border: 1px solid rgba(0,255,150,0.3);
+    color: #b3ffd9;
+    text-shadow: 0 0 8px rgba(0,255,150,0.5);
+}
+.lang-btn:hover {
+    background: linear-gradient(135deg, rgba(0,255,150,0.35), rgba(0,150,100,0.15));
+    box-shadow: 0 0 18px rgba(0,255,150,0.35);
+}
+
+.settings-btn {
+    background: linear-gradient(135deg, rgba(255,200,0,0.15), rgba(200,120,0,0.08));
+    border: 1px solid rgba(255,200,0,0.3);
+    color: #ffe6a3;
+    text-shadow: 0 0 8px rgba(255,200,0,0.5);
+    padding: 8px 12px;
+    font-size: 1rem;
+    letter-spacing: 0;
+}
+.settings-btn:hover {
+    background: linear-gradient(135deg, rgba(255,200,0,0.35), rgba(200,120,0,0.15));
+    box-shadow: 0 0 18px rgba(255,200,0,0.35);
+}
+
+.push-btn {
+    background: linear-gradient(135deg, rgba(0,238,255,0.15), rgba(0,120,180,0.08));
+    border: 1px solid rgba(0,238,255,0.3);
+    color: #a0f8ff;
+    text-shadow: 0 0 8px rgba(0,238,255,0.5);
+    font-size: 0.75rem;
+    padding: 8px 10px;
+    letter-spacing: 0;
+}
+.push-btn:hover {
+    background: linear-gradient(135deg, rgba(0,238,255,0.35), rgba(0,120,180,0.15));
+    box-shadow: 0 0 18px rgba(0,238,255,0.35);
+}
+.push-btn.subscribed {
+    background: linear-gradient(135deg, rgba(0,255,120,0.15), rgba(0,150,80,0.08));
+    border: 1px solid rgba(0,255,120,0.3);
+    color: #a0ffd0;
+    text-shadow: 0 0 8px rgba(0,255,120,0.5);
+}
+.push-btn.subscribed:hover {
+    background: linear-gradient(135deg, rgba(0,255,120,0.35), rgba(0,150,80,0.15));
+    box-shadow: 0 0 18px rgba(0,255,120,0.35);
+}
+
+.layout-btn {
+    background: linear-gradient(135deg, rgba(180,0,255,0.15), rgba(90,0,150,0.08));
+    border: 1px solid rgba(180,0,255,0.3);
+    color: #f3d5ff;
+    text-shadow: 0 0 8px rgba(180,0,255,0.5);
+}
+.layout-btn:hover {
+    background: linear-gradient(135deg, rgba(180,0,255,0.35), rgba(90,0,150,0.15));
+    box-shadow: 0 0 18px rgba(180,0,255,0.35);
+}
+
+/* =========================
+   FRAME (BASE)
+========================= */
+.frame{
+    width:95%;
+    max-width:1000px;
+    padding: 60px 42px 42px 42px;
+    border-radius:36px;
+    position:relative;
+    overflow:hidden;
+    border:2px solid rgba(0,255,255,.28);
+
+    background-image:url('abyss_wait.jpg');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    transition: 0.5s ease;
+    background-color:rgba(0,0,0,.15);
+
+    box-shadow:
+        0 0 35px rgba(0,255,255,.18),
+        0 0 100px rgba(0,140,255,.10),
+        inset 0 0 60px rgba(255,255,255,.03);
+
+    animation:spawn 1s ease;
+}
+
+@keyframes spawn{
+    0%{ opacity:0; transform:translateY(40px) scale(.92); filter:blur(12px); }
+    100%{ opacity:1; transform:translateY(0px) scale(1); filter:blur(0px); }
+}
+
+.frame::before{
+    content:"";
+    position:absolute;
+    width:160%;
+    height:160%;
+    top:-30%;
+    left:-30%;
+    background: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.12)), conic-gradient(from 0deg, transparent, rgba(0,255,255,.02), transparent, rgba(255,0,90,.02), transparent, rgba(140,0,255,.02), transparent);
+    animation:spin 18s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.inner{ position:relative; z-index:5; }
+
+/* LOGO */
+.logo{
+    text-align:center;
+    color:#00eeff;
+    letter-spacing:8px;
+    font-size:1rem;
+    margin-bottom:12px;
+    text-shadow: 0 0 18px rgba(0,255,255,.45);
+}
+
+/* TITLE */
+.title{
+    text-align:center;
+    font-size:3.4rem;
+    font-weight:900;
+    line-height:1;
+    margin-bottom:30px;
+    background: linear-gradient(180deg, #ffffff, #aeeeff 55%, #00cfff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-shadow: 0 0 20px rgba(255,255,255,.35), 0 0 50px rgba(0,255,255,.25);
+}
+
+/* STATUS */
+.status{
+    width:fit-content;
+    max-width:100%;
+    margin:0 auto 35px auto;
+    padding:18px 40px;
+    border-radius:999px;
+    font-size:clamp(0.8rem, 3vw, 1.2rem);
+    font-weight:700;
+    letter-spacing:2px;
+    color:#ff9bbb;
+    border:2px solid rgba(255,0,100,.45);
+    background: linear-gradient(90deg, rgba(255,0,90,.30), rgba(255,0,90,.10));
+    box-shadow: 0 0 30px rgba(255,0,90,.25);
+    text-align: center;
+    word-break: break-word;
+}
+
+/* TIMER */
+.timer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:16px;
+    flex-wrap:nowrap;
+    margin-bottom: 35px;
+}
+
+.timebox{
+    width:50%;
+    max-width: 280px;
+    padding:32px 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    border-radius:30px;
+    position:relative;
+    overflow:hidden;
+    background: linear-gradient(180deg, rgba(0,255,255,.30), rgba(0,120,180,.22));
+    border:2px solid rgba(0,255,255,.38);
+    box-shadow: 0 0 40px rgba(0,255,255,.22), inset 0 0 30px rgba(255,255,255,.05), inset 0 -20px 40px rgba(0,0,0,.30);
+    animation:timerSpawn .8s ease;
+    transition: all 0.5s ease;
+}
+
+.timebox.abyss-finished {
+    background: linear-gradient(180deg, rgba(100,100,100,.15), rgba(40,40,40,.20)) !important;
+    border: 2px solid rgba(255,255,255,.15) !important;
+    box-shadow: 0 0 15px rgba(0,0,0,.5) !important;
+}
+.timebox.abyss-finished .number { color: #888888 !important; text-shadow: none !important; }
+.timebox.abyss-finished .label { color: #666666 !important; text-shadow: none !important; }
+
+@keyframes timerSpawn{
+    0%{ opacity:0; transform:translateY(30px) scale(.9); }
+    100%{ opacity:1; transform:translateY(0px) scale(1); }
+}
+
+.timebox::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,.18), transparent);
+    animation:shine 3s infinite;
+}
+@keyframes shine{ from{ transform:translateX(-120%); } to{ transform:translateX(120%); } }
+
+.number{
+    text-align:center;
+    font-size:clamp(2.8rem,7vw,5.2rem);
+    font-weight:900;
+    line-height:1;
+    color:#d8ffff;
+    text-shadow: 0 0 18px rgba(0,255,255,.65), 0 0 45px rgba(0,255,255,.45), 0 0 80px rgba(0,255,255,.22);
+}
+
+.label{
+    text-align:center;
+    margin-top:10px;
+    font-size:1.1rem;
+    letter-spacing:5px;
+    color:#9aefff;
+    text-shadow: 0 0 10px rgba(0,255,255,.35);
+}
+
+/* =========================
+   LAP COUNTER PANEL
+========================= */
+.counter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 24px;
+    animation: timerSpawn .9s ease;
+}
+
+.counter-box {
+    flex: 1 1 180px;
+    max-width: 250px;
+    min-height: 100px;
+    padding: 20px 14px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    background: linear-gradient(180deg, rgba(180,0,255,0.12), rgba(60,0,90,0.25));
+    border: 2px solid rgba(180,0,255,0.3);
+    box-shadow: 0 0 20px rgba(180,0,255,0.08);
+    transition: 0.4s ease;
+}
+
+.counter-actions {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 18px;
+    margin-bottom: 18px;
+}
+
+.counter-actions .control-btn {
+    width: max-content;
+}
+
+.counter-title {
+    font-size: clamp(0.7rem, 2.8vw, 1.2rem);
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    text-align: center;
+    color: #f3d5ff;
+    text-shadow: 0 0 12px rgba(180,0,255,0.5);
+    white-space: normal;
+    word-break: keep-all;
+    line-height: 1.3;
+}
+
+body.lang-en .counter-title {
+    font-size: clamp(0.65rem, 2.5vw, 1.0rem);
+    letter-spacing: 0px;
+}
+
+.counter-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.counter-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(180,0,255,0.5);
+    background: rgba(40,0,60,0.6);
+    color: #d866ff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    user-select: none;
+}
+
+.counter-btn:active { transform: scale(0.9); }
+.counter-btn:hover { background: rgba(180,0,255,0.2); box-shadow: 0 0 10px rgba(180,0,255,0.4); }
+
+.counter-value {
+    font-size: 3.5rem;
+    font-weight: 900;
+    min-width: 70px;
+    text-align: center;
+    line-height: 1;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255,255,255,0.5);
+}
+
+.counter-box.max-reached {
+    border: 2px solid rgba(255,180,0,0.8);
+    background: linear-gradient(180deg, rgba(255,150,0,0.25), rgba(70,40,0,0.4));
+    box-shadow: 0 0 30px rgba(255,150,0,0.35);
+}
+.counter-box.max-reached .counter-value { color: #ffe6a3; text-shadow: 0 0 15px #ffaa00, 0 0 30px #ffaa00; }
+.counter-box.max-reached .counter-title { color: #ffe6a3; text-shadow: 0 0 10px rgba(255,150,0,0.6); }
+
+/* =========================
+   SUB MESSAGE & TEXT BINDING
+========================= */
+.text-keep {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.sub-message{
+    width:100%;
+    padding:0 40px;
+    min-height:160px;
+    height:auto;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    border-radius:24px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    transition:.4s;
+    animation:subSpawn .6s ease;
+    font-size:1.75rem;
+    font-weight:900;
+    letter-spacing:2px;
+    line-height:1.5;
+    text-shadow: 0 0 15px rgba(255,255,255,.25), 0 0 25px currentColor;
+}
+
+@keyframes subSpawn{ 0%{ opacity:0; transform:translateY(15px); } 100%{ opacity:1; transform:translateY(0px); } }
+
+.sub-wait{
+    color:#d6f8ff;
+    border:2px solid rgba(0,255,255,.28);
+    background: linear-gradient(90deg, rgba(0,255,255,.14), rgba(0,120,255,.08));
+    box-shadow: 0 0 25px rgba(0,255,255,.12);
+    text-shadow: 0 0 12px rgba(0,255,255,.35);
+}
+
+.sub-skyripper{
+    color:#ffffff;
+    font-size:1.9rem;
+    border:2px solid rgba(180,0,255,.45);
+    background: linear-gradient(90deg, rgba(140,0,255,.22), rgba(70,0,120,.12));
+    box-shadow: 0 0 30px rgba(180,0,255,.22);
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #b400ff, 0 0 40px #b400ff, 0 0 60px #b400ff;
+    animation: subSpawn .6s ease, pulse 2s infinite;
+}
+
+.sub-danger{
+    color:#ffffff;
+    font-size:1.9rem;
+    border:2px solid rgba(255,0,80,.60);
+    background: linear-gradient(90deg, rgba(255,0,80,.28), rgba(120,0,40,.12));
+    box-shadow: 0 0 40px rgba(255,0,80,.35);
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #ff0055, 0 0 40px #ff0055, 0 0 70px #ff0055;
+}
+
+@keyframes pulse{ 0%{ box-shadow: 0 0 20px rgba(180,0,255,.18); } 50%{ box-shadow: 0 0 40px rgba(180,0,255,.40); } 100%{ box-shadow: 0 0 20px rgba(180,0,255,.18); } }
+
+.sky-panel{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; gap:14px; padding-bottom: 18px; }
+.sky-header{ display:flex; flex-wrap:wrap; justify-content:center; align-items:baseline; gap:8px; font-weight:900; font-size: 2.2rem; letter-spacing: 2px; text-align:center; }
+.sub-danger .sky-header { text-shadow: 0 0 15px rgba(255,0,80,0.8); }
+.sub-skyripper .sky-header { text-shadow: 0 0 15px rgba(180,0,255,0.7); }
+.sky-header span{ font-size: 1.4rem; opacity:.9; font-weight:700; }
+
+.sky-mini-timer{ display:flex; justify-content:center; align-items:center; gap:20px; margin-top:12px; }
+.sky-mini-box{ width:96px; padding:12px; border-radius:18px; text-align:center; }
+.sub-skyripper .sky-mini-box { border:2px solid rgba(180,0,255,.5); background: linear-gradient(180deg, rgba(180,0,255,.25), rgba(60,0,90,.15)); box-shadow: 0 0 20px rgba(180,0,255,.25); }
+.sub-danger .sky-mini-box { border:2px solid rgba(255,0,80,.5); background: linear-gradient(180deg, rgba(255,0,80,.25), rgba(90,0,40,.15)); box-shadow: 0 0 20px rgba(255,0,80,.25); }
+
+.sky-mini-num{ font-size:2.6rem; font-weight:900; line-height:1; text-align:center; }
+.sky-mini-label{ margin-top:6px; text-align:center; font-size:.8rem; letter-spacing:2px; }
+
+
+/* ===================================================
+   ★ 16:9 横型レイアウト (PC・大画面かつ「is-landscape」有効時)
+=================================================== */
+@media(min-width:901px){
+    body.is-landscape .frame {
+        max-width: 1100px;
+        width: 95%;
+        aspect-ratio: 16 / 9;
+        padding: 30px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    body.is-landscape .frame .inner {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 20px 40px;
+        height: 100%;
+        align-content: center;
+    }
+
+    .layout-header-zone {
+        grid-column: 1 / span 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; 
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+        padding-bottom: 10px;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+
+    body.is-landscape .logo {
+        margin-bottom: 4px;
+        text-align: center; 
+    }
+
+    body.is-landscape .title {
+        font-size: 2.8rem;
+        margin-bottom: 0;
+        text-align: center; 
+    }
+
+    body.is-landscape .layout-left-zone {
+        grid-column: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    body.is-landscape .status {
+        margin: 0;
+        width: 100%;
+        padding: 14px 20px;
+    }
+
+    body.is-landscape .timer {
+        margin-bottom: 0;
+        height: 100%;
+    }
+
+    body.is-landscape .timebox {
+        max-width: none;
+        height: 100%;
+        justify-content: center;
+        padding: 40px 0;
+    }
+    
+    body.is-landscape .number {
+        font-size: 6.5rem;
+    }
+
+    body.is-landscape .layout-right-zone {
+        grid-column: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    body.is-landscape .counter-container {
+        margin-bottom: 0;
+    }
+
+    body.is-landscape .counter-box {
+        padding: 20px 12px;
+    }
+
+    body.is-landscape .sub-message {
+        margin-bottom: 0;
+        flex-grow: 1;
+        min-height: 180px; 
+    }
+    
+    body.is-landscape .sky-header {
+        font-size: 2.4rem;
+    }
+    body.is-landscape .sky-header span {
+        font-size: 1.5rem;
+    }
+    body.is-landscape .sky-mini-timer {
+        gap: 24px;
+        margin-top: 10px;
+    }
+    body.is-landscape .sky-mini-box {
+        width: 150px;       
+        padding: 18px 10px; 
+        border-radius: 24px;
+    }
+    body.is-landscape .sky-mini-num {
+        font-size: 4.5rem;  
+    }
+    body.is-landscape .sky-mini-label {
+        font-size: 1.1rem;   
+        letter-spacing: 3px;
+        margin-top: 4px;
+    }
+}
+
+
+/* =========================
+   MODAL OVERLAY & NOTIFICATION SETTINGS
+========================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.settings-panel {
+    width: 90%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px;
+    border-radius: 28px;
+    border: 2px solid rgba(0, 255, 255, 0.35);
+    background: linear-gradient(180deg, rgba(10, 22, 35, 0.95), rgba(5, 12, 20, 0.98));
+    box-shadow: 
+        0 0 40px rgba(0, 255, 255, 0.25),
+        inset 0 0 25px rgba(255,255,255,0.02);
+    transform: translateY(30px) scale(0.95);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    margin: auto;
+}
+
+.modal-overlay.active .settings-panel {
+    transform: translateY(0) scale(1);
+}
+
+.settings-title {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #00eeff;
+    letter-spacing: 3px;
+    margin-bottom: 22px;
+    text-shadow: 0 0 15px rgba(0,255,255,0.5);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.2);
+    padding-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: rgba(0,255,255,0.6);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    line-height: 1;
+}
+.close-modal-btn:hover { color: #fff; text-shadow: 0 0 8px #00eeff; }
+
+.audio-control-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.volume-slider-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.volume-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.12);
+    outline: none;
+}
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00eeff;
+    cursor: pointer;
+    box-shadow: 0 0 12px #00eeff;
+}
+
+.volume-val-text {
+    font-size: 1rem;
+    min-width: 50px;
+    text-align: right;
+    color: #aeeeff;
+    font-weight: 700;
+}
+
+.notify-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notify-group-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #9aefff;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+}
+
+.notify-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+}
+.notify-item:hover {
+    background: rgba(0, 255, 255, 0.06);
+    border-color: rgba(0, 255, 255, 0.25);
+}
+
+.notify-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #00eeff;
+    flex-shrink: 0;
+}
+
+.notify-item span {
+    font-size: 0.88rem;
+    letter-spacing: 0.5px;
+    color: #e0f7fc;
+    font-weight: 500;
+}
+
+/* ★DISCORD WEBHOOK SETTING */
+.discord-webhook-box {
+    margin-top: 15px;
+    background: rgba(88, 101, 242, 0.05);
+    border: 1px solid rgba(88, 101, 242, 0.2);
+    padding: 16px;
+    border-radius: 16px;
+}
+.discord-input-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #7289da;
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+.discord-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(88, 101, 242, 0.4);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fff;
+    font-family: 'Orbitron', monospace, sans-serif;
+    font-size: 0.8rem;
+    outline: none;
+    transition: 0.3s;
+}
+.discord-input:focus {
+    border-color: #5865F2;
+    box-shadow: 0 0 10px rgba(88,101,242,0.3);
+}
+
+/* ★SITE TOAST CONTAINER */
+#toastContainer {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+.toast-card {
+    pointer-events: auto;
+    width: 320px;
+    background: linear-gradient(135deg, rgba(10, 25, 40, 0.95), rgba(5, 10, 20, 0.98));
+    border-left: 5px solid #00eeff;
+    border-top: 1px solid rgba(0,255,255,0.2);
+    border-bottom: 1px solid rgba(0,255,255,0.2);
+    border-right: 1px solid rgba(0,255,255,0.2);
+    padding: 16px;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(0,255,255,0.15);
+    transform: translateX(360px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.toast-card.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+.toast-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #00eeff;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+.toast-body {
+    font-size: 0.8rem;
+    color: #e0f7fc;
+    line-height: 1.4;
+}
+
+/* PC専用 スカイリッパータイマー 拡大 (縦型表示用) */
+@media(min-width:901px){
+    body:not(.is-landscape) .sky-mini-box{ width: 140px; padding: 20px 12px; border-radius: 22px; }
+    body:not(.is-landscape) .sky-mini-num{ font-size: 4.2rem; }
+    body:not(.is-landscape) .sky-mini-label{ font-size: 1rem; letter-spacing: 3px; margin-top: 10px; }
+    body:not(.is-landscape) .sky-mini-timer{ gap: 28px; margin-top: 18px; }
+    body:not(.is-landscape) .sky-header{ font-size: 2.5rem; }
+    body:not(.is-landscape) .sky-header span{ font-size: 1.5rem; }
+    body:not(.is-landscape) .sub-message{ min-height: 220px; }
+}
+
+/* MOBILE */
+@media(max-width:900px){
+    body{ padding: 20px 0; align-items: center; }
+    .top-controls { top: 10px; right: 10px; left: 10px; gap: 5px; }
+    .control-btn { font-size: 0.6rem; padding: 5px 8px; }
+    .settings-btn { font-size: 0.9rem; padding: 5px 8px; }
+    .frame{ width:95%; padding: 72px 16px 20px 16px; border-radius:24px; margin: 0 auto; }
+    .title{ font-size:2.2rem; margin-bottom: 20px; text-align: center !important; }
+    .logo { text-align: center !important; }
+    .status{ font-size:clamp(0.7rem, 3vw, 0.9rem); padding:12px 16px; margin-bottom:20px; letter-spacing:1px; }
+    .timer{ gap:8px; margin-bottom: 20px; }
+    .timebox{ padding:24px 0; border-radius: 20px; }
+    .number{ font-size:clamp(4.2rem, 11vw, 5rem); }
+    .label{ font-size:.9rem; letter-spacing:2px; }
+    
+    .counter-container { gap: 10px; margin-bottom: 20px; }
+    .counter-box { padding: 16px 8px; border-radius: 18px; min-height: 150px; }
+    .counter-value { font-size: 2.2rem; min-width: 48px; }
+    .counter-btn { width: 34px; height: 34px; font-size: 1.2rem; }
+    .counter-controls { gap: 10px; }
+    .counter-actions { margin-top: 12px; }
+
+    .sky-header { font-size: clamp(1.5rem, 6vw, 2.2rem); gap: 6px; }
+    .sky-header span { font-size: clamp(1.1rem, 4.5vw, 1.4rem); }
+    .sky-mini-timer { gap: 14px; margin-top: 12px; }
+    .sky-mini-box { width: clamp(90px, 22vw, 130px); padding: 14px 8px; border-radius: 18px; }
+    .sky-mini-num { font-size: clamp(2.8rem, 10vw, 4rem); }
+    .sky-mini-label { font-size: clamp(0.75rem, 2.5vw, 0.9rem); margin-top: 6px; letter-spacing: 2px; }
+    .sub-message{ min-height:160px; padding:20px; font-size:1rem; }
+
+    .settings-panel { padding: 20px; width: 92%; }
+    .settings-title { font-size: 1.0rem; letter-spacing: 1px; }
+    .notify-item { padding: 12px; }
+    .notify-item span { font-size: 0.78rem; }
+    
+    #layoutToggleBtn { display: none; }
+    #toastContainer { right: 10px; top: 75px; width: calc(100% - 20px); max-width: 300px; }
+}
+
+@media(max-width:375px){
+    .control-btn { font-size: 0.55rem; padding: 4px 6px; }
+    .settings-btn { font-size: 0.85rem; }
+    .top-controls { gap: 4px; }
+    .title { font-size: 1.9rem; }
+    .frame { padding-top: 68px; }
+}
+</style>
+</head>
+<body class="lang-en">
+<div id="toastContainer"></div>
+<div class="top-controls">
+<button aria-label="通知・サウンド設定" class="control-btn settings-btn" id="settingsBtn" onclick="toggleModal(true)">⚙</button>
+<button class="control-btn push-btn" id="pushSubscribeBtn" onclick="togglePushSubscription()" title="クリックでバックグラウンド通知をONにします">🔔 通知をONにする</button>
+<button class="control-btn layout-btn" id="layoutToggleBtn" onclick="toggleLayout()">横型</button>
+<button class="control-btn lang-btn" id="langToggleBtn" onclick="toggleLanguage()">JA</button>
+<button class="control-btn reset-btn" id="clearBtn" onclick="resetAllCounts()">CLEAR</button>
+<button class="control-btn" id="bgToggleBtn" onclick="toggleBackground()">BG OFF</button>
+</div>
+<div class="frame" style='background-image: url("abyss_wait.jpg");'>
+<div class="inner">
+<div class="layout-left-zone">
+<div class="status" id="status">NEXT ABYSS STARTS IN</div>
+<div class="timer">
+<div class="timebox" id="minBox">
+<div class="number" id="minutes">13</div>
+<div class="label" id="minLabel">MIN</div>
+</div>
+<div class="timebox" id="secBox">
+<div class="number" id="seconds">39</div>
+<div class="label" id="secLabel">SEC</div>
+</div>
+</div>
+</div>
+<div class="layout-right-zone">
+<div class="counter-container">
+<div class="counter-box" id="huntingBox">
+<div class="counter-title" id="huntingTitle">Aerial Hunt</div>
+<div class="counter-controls">
+<button class="counter-btn" onclick="changeCount('hunting', -1)">-</button>
+<div class="counter-value" id="huntingVal">0</div>
+<button class="counter-btn" onclick="changeCount('hunting', 1)">+</button>
+</div>
+</div>
+<div class="counter-box" id="relicBox">
+<div class="counter-title" id="relicTitle">Riftwalker Relic</div>
+<div class="counter-controls">
+<button class="counter-btn" onclick="changeCount('relic', -1)">-</button>
+<div class="counter-value" id="relicVal">0</div>
+<button class="counter-btn" onclick="changeCount('relic', 1)">+</button>
+</div>
+</div>
+<div class="counter-box" id="brokenBox">
+<div class="counter-title" id="brokenTitle">Broken Relic</div>
+<div class="counter-controls">
+<button class="counter-btn" onclick="changeCount('broken', -1)">-</button>
+<div class="counter-value" id="brokenVal">0</div>
+<button class="counter-btn" onclick="changeCount('broken', 1)">+</button>
+</div>
+</div>
+</div>
+<div class="counter-actions">
+<button class="control-btn reset-btn" onclick="resetAllCounts()">Reset All</button>
+</div>
+<div class="sub-message sub-wait" id="subMessage" style="">
+<div style="font-size:clamp(1rem,4vw,2.2rem); font-weight:900; letter-spacing:2px; text-align:center;">
+                Waiting for Gravity Abyss!<br/>Prepare for the Airless Continent!
+            </div>
+</div>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="settingsModal" onclick="handleOverlayClick(event)">
+<div class="settings-panel">
+<div class="settings-title">
+<span id="settingsTitle">NOTIFICATION &amp; SOUND SETTINGS</span>
+<button class="close-modal-btn" onclick="toggleModal(false)">✕</button>
+</div>
+<div class="audio-control-row">
+<button class="control-btn" id="muteBtn" onclick="toggleMute()" style="min-width: 90px; background: linear-gradient(135deg, rgba(255, 0, 80, 0.2), rgba(150, 0, 40, 0.1));">MUTE ON</button>
+<div class="volume-slider-container">
+<input class="volume-slider" id="volumeSlider" max="100" min="0" oninput="handleVolumeChange(this.value)" type="range" value="0"/>
+<div class="volume-val-text" id="volumeValue">0%</div>
+</div>
+</div>
+<div class="notify-grid">
+<div class="notify-group-title" id="groupTitleAbyss">■ Gravity Abyss Alerts</div>
+<label class="notify-item">
+<input id="notifyAbyss5" onchange="toggleNotificationTrigger('notifyAbyss5', 'abyss_notifyAbyss5', this.checked)" type="checkbox"/>
+<span id="labelAbyss5">Alert 5 min before (Sound + Multi-Notify)</span>
+</label>
+<label class="notify-item">
+<input id="notifyAbyss1" onchange="toggleNotificationTrigger('notifyAbyss1', 'abyss_notifyAbyss1', this.checked)" type="checkbox"/>
+<span id="labelAbyss1">Alert 1 min before (Sound + Multi-Notify)</span>
+</label>
+<label class="notify-item">
+<input id="notifyAbyssBrowser" onchange="toggleNotificationTrigger('notifyAbyssBrowser', 'abyss_notifyAbyssBrowser', this.checked)" type="checkbox"/>
+<span id="labelAbyssBrowser">Alert at Abyss start (Sound + Multi-Notify)</span>
+</label>
+<div class="notify-group-title" id="groupTitleSky">■ Riftwalker Spawn Alerts</div>
+<label class="notify-item">
+<input id="notify3min" onchange="toggleNotificationTrigger('notify3min', 'abyss_notify3', this.checked)" type="checkbox"/>
+<span id="labelSky3">Alert 3 min before (Sound + Multi-Notify)</span>
+</label>
+<label class="notify-item">
+<input id="notify1min" onchange="toggleNotificationTrigger('notify1min', 'abyss_notify1', this.checked)" type="checkbox"/>
+<span id="labelSky1">Alert 1 min before (Sound + Multi-Notify)</span>
+</label>
+<label class="notify-item">
+<input id="notifyBrowser" onchange="toggleNotificationTrigger('notifyBrowser', 'abyss_notifyBrowser', this.checked)" type="checkbox"/>
+<span id="labelSkyBrowser">Alert at spawn (Sound + Multi-Notify)</span>
+</label>
+</div>
+<!-- ★DISCORD WEBHOOK INTEGRATION PANEL -->
+<div class="discord-webhook-box">
+<label class="discord-input-label" id="discordLabel">■ Discord Webhook URL (Blank to disable)</label>
+<input class="discord-input" id="discordUrlInput" oninput="saveDiscordUrl(this.value)" placeholder="Paste your Webhook URL here" type="url"/>
+</div>
+</div>
+</div>
+<script>
+/* ===================================================
+   LANGUAGE DICTIONARY & LOGIC
+=================================================== */
+let currentLang = "en"; 
+
+const i18n = {
+    ja: {
+        statusActive: "GRAVITY ABYSS 開催中",
+        statusWait: "次回グラビティアビス開始まで",
+        huntingTitle: "空域ハンティング",
+        relicTitle: "スカイリッパーの遺物",
+        brokenTitle: "破損遺物",
+        minLabel: "MIN",
+        secLabel: "SEC",
+        clearConfirm: "カウンターの数値をすべてリセット（0にクリア）しますか？",
+        msgWait: "グラビティアビス<span class=\"text-keep\">待機中！</span><br>無重力大陸に備えよ！",
+        msgSkySpawn: "スカイリッパー",
+        msgSkySpawnSub: "出現まで",
+        msgSkyActive: "スカイリッパー",
+        msgSkyActiveSub: "終了まで!!",
+        btnSettings: "⚙",
+        settingsTitle: "通知・サウンド設定",
+        groupTitleAbyss: "■ グラビティアビス予告",
+        groupTitleSky: "■ スカイリッパー出現予告",
+        labelAbyss5: "5分前に通知（音＋各種通知連動）",
+        labelAbyss1: "1分前に通知（音＋各種通知連動）",
+        labelAbyssBrowser: "アビス開始ジャストに通知（音＋各種通知連動）",
+        labelSky3: "3分前に通知（音＋各種通知連動）",
+        labelSky1: "1分前に通知（音＋各種通知連動）",
+        labelSkyBrowser: "出現ジャストに通知（音＋各種通知連動）",
+        discordLabel: "■ Discord Webhook URL (空欄で無効)",
+        discordPlaceholder: "ここにWebhook URLをペースト"
+    },
+    en: {
+        statusActive: "GRAVITY ABYSS IN PROGRESS",
+        statusWait: "NEXT ABYSS STARTS IN",
+        huntingTitle: "Aerial Hunt",
+        relicTitle: "Riftwalker Relic",
+        brokenTitle: "Broken Relic",
+        minLabel: "MIN",
+        secLabel: "SEC",
+        clearConfirm: "Do you want to reset all counter values to 0?",
+        msgWait: "Waiting for Gravity Abyss!<br>Prepare for the Airless Continent!",
+        msgSkySpawn: "RIFTWALKER",
+        msgSkySpawnSub: "SPAWNING IN",
+        msgSkyActive: "RIFTWALKER",
+        msgSkyActiveSub: "CLOSING!!",
+        btnSettings: "⚙",
+        settingsTitle: "NOTIFICATION & SOUND SETTINGS",
+        groupTitleAbyss: "■ Gravity Abyss Alerts",
+        groupTitleSky: "■ Riftwalker Spawn Alerts",
+        labelAbyss5: "Alert 5 min before (Sound + Multi-Notify)",
+        labelAbyss1: "Alert 1 min before (Sound + Multi-Notify)",
+        labelAbyssBrowser: "Alert at Abyss start (Sound + Multi-Notify)",
+        labelSky3: "Alert 3 min before (Sound + Multi-Notify)",
+        labelSky1: "Alert 1 min before (Sound + Multi-Notify)",
+        labelSkyBrowser: "Alert at spawn (Sound + Multi-Notify)",
+        discordLabel: "■ Discord Webhook URL (Blank to disable)",
+        discordPlaceholder: "Paste your Webhook URL here"
+    }
+};
+
+function toggleLanguage() {
+    currentLang = (currentLang === "ja") ? "en" : "ja";
+    localStorage.setItem("abyss_lang", currentLang);
+    applyLanguage();
+}
+
+function applyLanguage() {
+    const lang = i18n[currentLang];
+    document.documentElement.lang = currentLang;
+    
+    if (currentLang === "en") {
+        document.body.classList.add("lang-en");
+        document.getElementById("langToggleBtn").textContent = "JA";
+    } else {
+        document.body.classList.remove("lang-en");
+        document.getElementById("langToggleBtn").textContent = "EN";
+    }
+
+    document.getElementById("settingsBtn").textContent = lang.btnSettings;
+    document.getElementById("huntingTitle").textContent = lang.huntingTitle;
+    document.getElementById("relicTitle").textContent = lang.relicTitle;
+    if (document.getElementById("brokenTitle")) {
+        document.getElementById("brokenTitle").textContent = lang.brokenTitle;
+    }
+    document.getElementById("minLabel").textContent = lang.minLabel;
+    document.getElementById("secLabel").textContent = lang.secLabel;
+
+    document.getElementById("settingsTitle").textContent = lang.settingsTitle;
+    document.getElementById("groupTitleAbyss").textContent = lang.groupTitleAbyss;
+    document.getElementById("groupTitleSky").textContent = lang.groupTitleSky;
+    document.getElementById("labelAbyss5").textContent = lang.labelAbyss5;
+    document.getElementById("labelAbyss1").textContent = lang.labelAbyss1;
+    document.getElementById("labelAbyssBrowser").textContent = lang.labelAbyssBrowser;
+    document.getElementById("labelSky3").textContent = lang.labelSky3;
+    document.getElementById("labelSky1").textContent = lang.labelSky1;
+    document.getElementById("labelSkyBrowser").textContent = lang.labelSkyBrowser;
+    
+    document.getElementById("discordLabel").textContent = lang.discordLabel;
+    document.getElementById("discordUrlInput").placeholder = lang.discordPlaceholder;
+
+    updateGravityAbyssTimer();
+}
+
+/* ===================================================
+   MODAL CONTROLLER
+=================================================== */
+function toggleModal(show) {
+    const modal = document.getElementById("settingsModal");
+    if (show) modal.classList.add("active");
+    else modal.classList.remove("active");
+}
+
+function handleOverlayClick(event) {
+    if (event.target.id === "settingsModal") toggleModal(false);
+}
+
+/* ===================================================
+   ★SITE TOAST NOTIFIER SYSTEM
+=================================================== */
+function showSiteToastNotification(title, text) {
+    const container = document.getElementById("toastContainer");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    toast.className = "toast-card";
+    toast.innerHTML = `
+        <div class="toast-title">${title}</div>
+        <div class="toast-body">${text}</div>
+    `;
+
+    container.appendChild(toast);
+
+    // 微小な遅延を設けて滑らかなアニメーション開始
+    setTimeout(() => toast.classList.add("show"), 50);
+
+    // 5秒後に自動消滅
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+    }, 5000);
+}
+
+/* ===================================================
+   ★DISCORD WEBHOOK CALLER
+=================================================== */
+function saveDiscordUrl(url) {
+    localStorage.setItem("abyss_discord_webhook", url.trim());
+}
+
+function sendDiscordWebhookNotification(title, text, colorCode = 5814783) {
+    const webhookUrl = localStorage.getItem("abyss_discord_webhook");
+    if (!webhookUrl || !webhookUrl.startsWith("https://discord.com/api/webhooks/")) return;
+
+    const payload = {
+        embeds: [{
+            title: title,
+            description: text,
+            color: colorCode,
+            timestamp: new Date().toISOString(),
+            footer: {
+                text: "Once Human - Gravity Abyss Timer"
+            }
+        }]
+    };
+
+    fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    }).catch(err => console.error("Discord Webhook Error:", err));
+}
+
+/* ===================================================
+   ★MASTER ALERTS BUNDLER (通知の一括処理・多重化)
+=================================================== */
+function executeMasterNotification(title, message, isAbyssEvent = true) {
+    // 1. 本体の電子チャイム音
+    playNotificationSound();
+
+    // 2. サイト内ポップアップ（トースト）表示
+    showSiteToastNotification(title, message);
+
+    // 3. ブラウザ標準プッシュ通知（Notification未対応ブラウザ(iOS Safari等)でもエラーにならないようガード）
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        new Notification(title, {
+            body: message,
+            icon: 'icon-192.png'
+        });
+    }
+
+    // 4. Discord Webhook通知 (アビスはシアン系、スカイはパープル・マゼンタ系カラーで色分け)
+    const color = isAbyssEvent ? 61951 : 11796735;
+    sendDiscordWebhookNotification(title, message, color);
+}
+
+/* ===================================================
+   SOUND & NOTIFICATION CORE LOGIC
+=================================================== */
+let volumeLv = 0.0; 
+let isMuted = true; 
+
+let lastNotifiedTimes = {};
+
+function canNotify(triggerKey, jstDate) {
+    // 範囲チェック導入後は「分単位」でキーを管理し、同一分内の重複発火を防ぐ。
+    // 秒単位にすると範囲チェックの複数秒が全てtrueになってしまうため分単位に変更。
+    const timeStr = jstDate.getHours() + ":" + jstDate.getMinutes();
+    if (lastNotifiedTimes[triggerKey] === timeStr) {
+        return false; 
+    }
+    lastNotifiedTimes[triggerKey] = timeStr;
+    return true;
+}
+
+function playNotificationSound() {
+    if (isMuted || volumeLv <= 0) return;
+
+    try {
+        const audioCtx = getAudioContext();
+        const now = audioCtx.currentTime;
+
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        osc1.connect(gainNode);
+        osc2.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+
+        osc1.frequency.setValueAtTime(554.37, now);
+        osc2.frequency.setValueAtTime(659.25, now);
+
+        osc1.frequency.exponentialRampToValueAtTime(880.00, now + 0.3);
+        osc2.frequency.exponentialRampToValueAtTime(1046.50, now + 0.3);
+
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(volumeLv * 0.7, now + 0.08);
+        gainNode.gain.setValueAtTime(volumeLv * 0.7, now + 0.4);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + 2.0);
+
+        osc1.start(now);
+        osc2.start(now);
+
+        osc1.stop(now + 2.1);
+        osc2.stop(now + 2.1);
+
+    } catch(e) {
+        console.log("AudioContext restriction:", e);
+    }
+}
+
+let audioCtx = null;
+
+function getAudioContext() {
+    if (!audioCtx) {
+        audioCtx = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+    }
+    return audioCtx;
+}
+
+function toggleNotificationTrigger(id, key, checked) {
+    if (typeof Notification === 'undefined') {
+        // Notification API未対応ブラウザ(iOS Safari等)。サウンド/トースト/Discordは動作するため許可だけ無効化
+        localStorage.setItem(key, checked);
+        return;
+    }
+    if (checked && Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                localStorage.setItem(key, true);
+            } else {
+                document.getElementById(id).checked = false;
+                localStorage.setItem(key, false);
+                alert("ブラウザのプッシュ通知を送るには通知許可が必要です。ブラウザの設定から許可してください。");
+            }
+        });
+    } else {
+        localStorage.setItem(key, checked);
+    }
+}
+
+function handleVolumeChange(val) {
+    document.getElementById('volumeValue').textContent = val + '%';
+    volumeLv = val / 100;
+    localStorage.setItem('abyss_volume', val);
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    localStorage.setItem('abyss_muted', isMuted);
+    updateMuteUI();
+}
+
+function updateMuteUI() {
+    const btn = document.getElementById('muteBtn');
+    if (isMuted) {
+        btn.textContent = "MUTE ON";
+        btn.style.background = "linear-gradient(135deg, rgba(255,0,80,0.2), rgba(150,0,40,0.1))";
+    } else {
+        btn.textContent = "MUTE OFF";
+        btn.style.background = "linear-gradient(135deg, rgba(0,255,255,0.15), rgba(0,120,255,0.08))";
+    }
+}
+
+/* ===================================================
+   SERVER TIME SYNC
+   端末のシステムクロックがズレていても全員が同じ基準時刻で
+   タイマーを表示できるよう、自前サーバーのレスポンスヘッダー
+   (Date) から「サーバー時刻 - 端末時刻」のオフセットを算出する。
+   取得できない場合はオフセット0（端末時計）にフォールバックする。
+=================================================== */
+const SUBSCRIBE_URL = 'https://tool.oncehumanjp.com/subscribe.php';
+let serverTimeOffset = 0; // ms。 実時刻 = Date.now() + serverTimeOffset
+
+async function syncServerTime(){
+    try {
+        const t0 = Date.now();
+        // GET/HEADどちらでも良いが、CORSで確実にDateヘッダーが読めるよう
+        // 同一オリジン想定のエンドポイントへ軽量リクエストを送る。
+        // no-storeでキャッシュからのDateヘッダー誤読を防止。
+        const res = await fetch(SUBSCRIBE_URL, { method: 'HEAD', cache: 'no-store' });
+        const t1 = Date.now();
+
+        const serverDateHeader = res.headers.get('Date');
+        if (!serverDateHeader) {
+            console.warn('[TimeSync] Dateヘッダーが取得できませんでした。端末時計を使用します。');
+            return;
+        }
+
+        const serverTime = new Date(serverDateHeader).getTime();
+        if (Number.isNaN(serverTime)) {
+            console.warn('[TimeSync] Dateヘッダーの解析に失敗しました。端末時計を使用します。');
+            return;
+        }
+
+        // 往復にかかった時間(RTT)の半分を通信遅延とみなして補正する。
+        // Dateヘッダーは秒精度のため、サーバー応答時点はt0〜t1の間と仮定し
+        // その中間時刻を基準にすることで誤差を抑える。
+        const rtt = t1 - t0;
+        const estimatedServerTimeAtT1 = serverTime + (rtt / 2);
+        const localTimeAtMeasurement = t0 + (rtt / 2);
+
+        serverTimeOffset = estimatedServerTimeAtT1 - localTimeAtMeasurement;
+
+        console.log(`[TimeSync] serverTimeOffset = ${serverTimeOffset.toFixed(0)}ms (RTT: ${rtt}ms)`);
+    } catch (e) {
+        console.warn('[TimeSync] サーバー時刻の取得に失敗しました。端末時計を使用します。', e);
+        // 失敗時はオフセット0のまま＝端末時計にフォールバック
+    }
+}
+
+/* ===================================================
+   TIMER LOGIC
+=================================================== */
+function updateGravityAbyssTimer(){
+    // serverTimeOffset: サーバー時刻 - 端末時刻 (ms)。syncServerTime()で算出。
+    // 端末の時計がズレていても、この補正によって全員が同じ基準時刻を見るようになる。
+    const now = new Date(Date.now() + serverTimeOffset);
+    // Date.now()は常にUTC基準のミリ秒なので、getTimezoneOffset()による補正は不要かつ誤り
+    // （端末のタイムゾーン設定に応じて二重に時刻がズレるバグの原因だった）。
+    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+
+    const minute = jst.getMinutes();
+    const second = jst.getSeconds();
+    const current = (minute * 60) + second;
+
+    const start          = (22 * 60) + 29;
+    const end            = (52 * 60) + 29;
+    const skyripperStart = (37 * 60) + 29;
+    const skyripperEnd   = (57 * 60) + 29;
+
+    let remain = 0;
+    let active = false;
+    const lang = i18n[currentLang];
+
+    if(current >= start && current < end){
+        active = true;
+        remain = end - current;
+        document.getElementById("status").innerHTML = lang.statusActive;
+    }else{
+        let nextStart;
+        if(current < start){
+            nextStart = start;
+        }else{
+            nextStart = (60 * 60) + start;
+        }
+        remain = nextStart - current;
+        document.getElementById("status").innerHTML = lang.statusWait;
+    }
+
+    const mins = Math.floor(remain / 60);
+    const secs = remain % 60;
+
+    document.getElementById("minutes").textContent = String(mins).padStart(2,'0');
+    document.getElementById("seconds").textContent = String(secs).padStart(2,'0');
+
+    if(active){
+        document.body.classList.add("active");
+    }else{
+        document.body.classList.remove("active");
+    }
+
+    const subMessage = document.getElementById("subMessage");
+    const frame = document.querySelector('.frame');
+    const minBox = document.getElementById("minBox");
+    const secBox = document.getElementById("secBox");
+
+    minBox.classList.remove("abyss-finished");
+    secBox.classList.remove("abyss-finished");
+
+    /* ---------------------------------------------------
+       通知ロジック（範囲チェック版）
+       setIntervalのスキップ・バックグラウンド抑制対策として
+       ピンポイント一致（===）から ±2秒の範囲チェックに変更。
+       canNotify() が分単位キーで重複発火を防ぐ。
+    --------------------------------------------------- */
+    let secondsToAbyss = -1; // -1 = 通知不要
+    if (!active) {
+        if (current < start) {
+            secondsToAbyss = start - current;
+        } else {
+            secondsToAbyss = ((60 * 60) + start) - current;
+        }
+    }
+
+    // アビス：5分前通知（298〜300秒の範囲で検知）
+    if (secondsToAbyss >= 298 && secondsToAbyss <= 300 && document.getElementById('notifyAbyss5').checked) {
+        if (canNotify("abyss5", jst)) {
+            executeMasterNotification(
+                "GRAVITY ABYSS", 
+                currentLang === "ja" ? "グラビティアビス開始まであと5分です！" : "Gravity Abyss starts in 5 minutes!",
+                true
+            );
+        }
+    }
+    // アビス：1分前通知（58〜60秒の範囲で検知）
+    if (secondsToAbyss >= 58 && secondsToAbyss <= 60 && document.getElementById('notifyAbyss1').checked) {
+        if (canNotify("abyss1", jst)) {
+            executeMasterNotification(
+                "GRAVITY ABYSS", 
+                currentLang === "ja" ? "グラビティアビス開始まであと1分です！" : "Gravity Abyss starts in 1 minute!",
+                true
+            );
+        }
+    }
+    // アビス：開始通知（start ±2秒の範囲で検知）
+    if (current >= start && current <= start + 2 && document.getElementById('notifyAbyssBrowser').checked) {
+        if (canNotify("abyssStartPush", jst)) {
+            executeMasterNotification(
+                "GRAVITY ABYSS", 
+                currentLang === "ja" ? "グラビティアビスが開始されました！" : "Gravity Abyss has started!",
+                true
+            );
+        }
+    }
+
+    // スカイリッパー出現判定ゾーン
+    if (current >= start && current < skyripperStart) {
+        const secondsToSky = skyripperStart - current;
+
+        // スカイ：3分前通知（178〜180秒の範囲で検知）
+        if (secondsToSky >= 178 && secondsToSky <= 180 && document.getElementById('notify3min').checked) {
+            if (canNotify("sky3", jst)) {
+                executeMasterNotification(
+                    "RIFTWALKER SPAWN", 
+                    currentLang === "ja" ? "スカイリッパー出現まであと3分です！" : "Riftwalker spawns in 3 minutes!",
+                    false
+                );
+            }
+        }
+        // スカイ：1分前通知（58〜60秒の範囲で検知）
+        if (secondsToSky >= 58 && secondsToSky <= 60 && document.getElementById('notify1min').checked) {
+            if (canNotify("sky1", jst)) {
+                executeMasterNotification(
+                    "RIFTWALKER SPAWN", 
+                    currentLang === "ja" ? "スカイリッパー出現まであと1分です！" : "Riftwalker spawns in 1 minute!",
+                    false
+                );
+            }
+        }
+    }
+    
+    // スカイ：出現通知（skyripperStart ±2秒の範囲で検知）
+    if (current >= skyripperStart && current <= skyripperStart + 2 && document.getElementById('notifyBrowser').checked) {
+        if (canNotify("skySpawnPush", jst)) {
+            executeMasterNotification(
+                "RIFTWALKER SPAWN", 
+                currentLang === "ja" ? "スカイリッパーが出現しました！" : "Riftwalker has spawned!",
+                false
+            );
+        }
+    }
+
+    /* ---------------------------------------------------
+       画面表示・UI更新
+    --------------------------------------------------- */
+    if(current >= start && current < skyripperStart){
+        if(!document.body.classList.contains("bg-off")){
+            frame.style.backgroundImage = "url('abyss_active.jpg')";
+        }
+        const skyRemain = skyripperStart - current;
+        const skyMin = Math.floor(skyRemain / 60);
+        const skySec = skyRemain % 60;
+
+        subMessage.className = "sub-message sub-skyripper";
+        subMessage.style.cssText = "";
+
+        subMessage.innerHTML = `
+            <div class="sky-panel">
+                <div class="sky-header">${lang.msgSkySpawn}<span>${lang.msgSkySpawnSub}</span></div>
+                <div class="sky-mini-timer">
+                    <div class="sky-mini-box">
+                        <div class="sky-mini-num">${String(skyMin).padStart(2,'0')}</div>
+                        <div class="sky-mini-label">${lang.minLabel}</div>
+                    </div>
+                    <div class="sky-mini-box">
+                        <div class="sky-mini-num">${String(skySec).padStart(2,'0')}</div>
+                        <div class="sky-mini-label">${lang.secLabel}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    else if(current >= skyripperStart && current < skyripperEnd){
+        if(!document.body.classList.contains("bg-off")){
+            frame.style.backgroundImage = "url('skyripper.jpg')";
+        }
+        const skyActiveRemain = skyripperEnd - current;
+        const skyActiveMin = Math.floor(skyActiveRemain / 60);
+        const skyActiveSec = skyActiveRemain % 60;
+
+        if(current >= end) {
+            minBox.classList.add("abyss-finished");
+            secBox.classList.add("abyss-finished");
+        }
+
+        subMessage.className = "sub-message sub-danger";
+        subMessage.style.cssText = "";
+
+        subMessage.innerHTML = `
+            <div class="sky-panel">
+                <div class="sky-header">${lang.msgSkyActive}<span>${lang.msgSkyActiveSub}</span></div>
+                <div class="sky-mini-timer">
+                    <div class="sky-mini-box">
+                        <div class="sky-mini-num">${String(skyActiveMin).padStart(2,'0')}</div>
+                        <div class="sky-mini-label">${lang.minLabel}</div>
+                    </div>
+                    <div class="sky-mini-box">
+                        <div class="sky-mini-num">${String(skyActiveSec).padStart(2,'0')}</div>
+                        <div class="sky-mini-label">${lang.secLabel}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    else {
+        if(!document.body.classList.contains("bg-off")){
+            frame.style.backgroundImage = "url('abyss_wait.jpg')";
+        }
+        subMessage.className = "sub-message sub-wait";
+        subMessage.style.cssText = "";
+
+        subMessage.innerHTML = `
+            <div style="font-size:clamp(1rem,4vw,2.2rem); font-weight:900; letter-spacing:2px; text-align:center;">
+                ${lang.msgWait}
+            </div>
+        `;
+    }
+}
+
+/* ===================================================
+   BACKGROUND TOGGLE
+=================================================== */
+function toggleBackground() {
+    const body = document.body;
+    const btn = document.getElementById("bgToggleBtn");
+
+    if (body.classList.contains("bg-off")) {
+        body.classList.remove("bg-off");
+        btn.textContent = "BG OFF";
+        localStorage.setItem("abyss_bg","on");
+    } else {
+        body.classList.add("bg-off");
+        btn.textContent = "BG ON";
+        localStorage.setItem("abyss_bg","off");
+    }
+}
+
+/* ===================================================
+   LAYOUT TOGGLE
+=================================================== */
+function toggleLayout() {
+    const body = document.body;
+    const btn = document.getElementById("layoutToggleBtn");
+
+    if (body.classList.contains("is-landscape")) {
+        body.classList.remove("is-landscape");
+        btn.textContent = "横型";
+        localStorage.setItem("abyss_layout", "vertical");
+    } else {
+        body.classList.add("is-landscape");
+        btn.textContent = "縦型";
+        localStorage.setItem("abyss_layout", "landscape");
+    }
+}
+
+/* ===================================================
+   LAP COUNTER & LOCALSTORAGE LOGIC
+=================================================== */
+let counts = { hunting: 0, relic: 0, broken: 0 };
+const LIMITS = { hunting: 12, relic: 10, broken: 20 };
+
+function loadSavedCounts() {
+    const savedHunting = localStorage.getItem("abyss_hunting");
+    const savedRelic = localStorage.getItem("abyss_relic");
+    const savedBroken = localStorage.getItem("abyss_broken") || localStorage.getItem("counter_relic");
+
+    if (savedHunting !== null) {
+        counts.hunting = Math.max(0, Math.min(LIMITS.hunting, parseInt(savedHunting, 10) || 0));
+        updateCounterDisplay('hunting');
+    }
+    if (savedRelic !== null) {
+        counts.relic = Math.max(0, Math.min(LIMITS.relic, parseInt(savedRelic, 10) || 0));
+        updateCounterDisplay('relic');
+    }
+    if (savedBroken !== null) {
+        counts.broken = Math.max(0, Math.min(LIMITS.broken, parseInt(savedBroken, 10) || 0));
+        updateCounterDisplay('broken');
+        localStorage.setItem("abyss_broken", counts.broken);
+    }
+
+    const savedLang = localStorage.getItem("abyss_lang");
+    if (savedLang !== null) currentLang = savedLang;
+    applyLanguage(); 
+}
+
+function changeCount(type, amount) {
+    if (!(type in counts)) return;
+    let nextCount = counts[type] + amount;
+    if (nextCount < 0) nextCount = 0;
+    if (nextCount > LIMITS[type]) return; 
+    
+    counts[type] = nextCount;
+    localStorage.setItem("abyss_" + type, counts[type]);
+    updateCounterDisplay(type);
+}
+
+function updateCounterDisplay(type) {
+    const valDisplay = document.getElementById(type + "Val");
+    const boxElement = document.getElementById(type + "Box");
+    
+    if(valDisplay && boxElement) {
+        valDisplay.textContent = counts[type];
+        if (counts[type] >= LIMITS[type]) {
+            boxElement.classList.add("max-reached");
+        } else {
+            boxElement.classList.remove("max-reached");
+        }
+    }
+}
+
+function resetAllCounts() {
+    const lang = i18n[currentLang];
+    if(confirm(lang.clearConfirm)) {
+        counts.hunting = 0;
+        counts.relic = 0;
+        counts.broken = 0;
+        localStorage.setItem("abyss_hunting", 0);
+        localStorage.setItem("abyss_relic", 0);
+        localStorage.setItem("abyss_broken", 0);
+        updateCounterDisplay('hunting');
+        updateCounterDisplay('relic');
+        updateCounterDisplay('broken');
+    }
+}
+
+/* ===================================================
+   SETTINGS STORAGE INITIALIZATION
+=================================================== */
+function loadNotifySettings() {
+    const load = (id, key, def = false) => { 
+        const v = localStorage.getItem(key);
+        const el = document.getElementById(id);
+        if (el) el.checked = v === null ? def : v === 'true';
+    };
+
+    load('notify3min',         'abyss_notify3',            false); 
+    load('notify1min',         'abyss_notify1',            false); 
+    load('notifyBrowser',      'abyss_notifyBrowser',      false); 
+    load('notifyAbyss5',       'abyss_notifyAbyss5',       false); 
+    load('notifyAbyss1',       'abyss_notifyAbyss1',       false); 
+    load('notifyAbyssBrowser', 'abyss_notifyAbyssBrowser', false);
+
+    const savedVol = localStorage.getItem('abyss_volume');
+    const vol = savedVol !== null ? parseInt(savedVol) : 0; 
+    const slider = document.getElementById('volumeSlider');
+    if (slider) slider.value = vol;
+    const valText = document.getElementById('volumeValue');
+    if (valText) valText.textContent = vol + '%';
+    volumeLv = vol / 100;
+
+    const savedMute = localStorage.getItem('abyss_muted');
+    isMuted = savedMute === null ? true : savedMute === 'true';
+    updateMuteUI();
+
+    // Webhook URLの読み込み
+    const savedDiscord = localStorage.getItem("abyss_discord_webhook");
+    if (savedDiscord) {
+        document.getElementById("discordUrlInput").value = savedDiscord;
+    }
+
+    if (typeof Notification === 'undefined' || Notification.permission !== 'granted') {
+        const nb = document.getElementById('notifyBrowser');
+        const nab = document.getElementById('notifyAbyssBrowser');
+        if (nb) nb.checked = false;
+        if (nab) nab.checked = false;
+    }
+}
+
+function loadSavedLayout() {
+    const layout = localStorage.getItem("abyss_layout");
+    const btn = document.getElementById("layoutToggleBtn");
+
+    if(layout === "landscape") {
+        document.body.classList.add("is-landscape");
+        if(btn) btn.textContent = "縦型";
+    } else {
+        document.body.classList.remove("is-landscape");
+        if(btn) btn.textContent = "横型";
+    }
+}
+
+function loadBackgroundState() {
+    const bg = localStorage.getItem("abyss_bg");
+    const btn = document.getElementById("bgToggleBtn");
+
+    if(bg === "off"){
+        document.body.classList.add("bg-off");
+        if(btn) btn.textContent = "BG ON";
+    } else {
+        document.body.classList.remove("bg-off");
+        if(btn) btn.textContent = "BG OFF";
+    }
+}
+
+/* ===================================================
+   INIT
+=================================================== */
+loadNotifySettings();
+loadSavedCounts();
+loadSavedLayout();
+loadBackgroundState();
+
+// サーバー時刻と同期してからタイマーを起動する。
+// 同期前は端末時計(offset=0)で即座に1回表示し、
+// 同期完了後に補正済みの値へ更新する。
+updateGravityAbyssTimer();
+syncServerTime().then(updateGravityAbyssTimer);
+setInterval(updateGravityAbyssTimer, 1000);
+
+// 長時間開きっぱなしのタブでも時計ドリフトが蓄積しないよう、
+// 10分ごとにサーバー時刻と再同期する。
+setInterval(syncServerTime, 10 * 60 * 1000);
+
+// バックグラウンドタブから復帰したとき即座にタイマーを再チェックする。
+// setIntervalはバックグラウンド中に間引かれるため、
+// 復帰時に通知対象の秒を飛ばしていた場合でも即時補正する。
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        updateGravityAbyssTimer();
+    }
+});
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('SW registered:', reg.scope))
+        .catch(err => console.log('SW failed:', err));
+    });
+}
+
+/* ===================================================
+   プッシュ通知購読管理
+=================================================== */
+const VAPID_PUBLIC_KEY = 'BFE9lDLWuaFHnq9e5JJEnqnLXFqeELiO_460cjv1EXBBYMPQZLHSQbQ4vKOJZHx_IxXysors3FR_9HNn-KHjQlk';
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function getPushSubscription() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return null;
+    const reg = await navigator.serviceWorker.ready;
+    return await reg.pushManager.getSubscription();
+}
+
+async function updatePushBtn() {
+    const btn = document.getElementById('pushSubscribeBtn');
+    if (!btn) return;
+    const sub = await getPushSubscription();
+    if (sub) {
+        btn.textContent = '✅ 通知ON中';
+        btn.classList.add('subscribed');
+        btn.title = 'クリックで通知をOFFにします';
+    } else {
+        btn.textContent = '🔔 通知をONにする';
+        btn.classList.remove('subscribed');
+        btn.title = 'クリックでバックグラウンド通知をONにします';
+    }
+}
+
+async function togglePushSubscription() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        showSiteToastNotification('通知エラー', 'このブラウザはプッシュ通知に対応していません');
+        return;
+    }
+
+    const existing = await getPushSubscription();
+
+    if (existing) {
+        // 購読解除（ブラウザ側を先に解除してからサーバーのDBを削除）
+        await existing.unsubscribe();
+        await fetch(SUBSCRIBE_URL, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endpoint: existing.endpoint }),
+        });
+        showSiteToastNotification('通知OFF', 'バックグラウンド通知をOFFにしました');
+    } else {
+        // 購読登録
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            showSiteToastNotification('通知エラー', 'ブラウザの通知許可が必要です');
+            return;
+        }
+        try {
+            const reg = await navigator.serviceWorker.ready;
+            const sub = await reg.pushManager.subscribe({
+                userVisibleOnly:      true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+            });
+            await fetch(SUBSCRIBE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(sub),
+            });
+            showSiteToastNotification('通知ON🔔', 'バックグラウンド通知をONにしました');
+        } catch (e) {
+            showSiteToastNotification('通知エラー', '登録に失敗しました: ' + e.message);
+        }
+    }
+    updatePushBtn();
+}
+
+// ページ読み込み時にボタン状態を反映
+updatePushBtn();
+
+
+</script>
+</body></html>
