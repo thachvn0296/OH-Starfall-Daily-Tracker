@@ -67,7 +67,7 @@ body.bg-off .frame {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 50;
+    z-index: 1200;
     text-align: center;
     padding: 10px 16px 12px;
     font-size: 0.72rem;
@@ -88,6 +88,96 @@ body.bg-off .frame {
 
 .page-footer a:hover {
     text-decoration: underline;
+}
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.confirm-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.confirm-dialog {
+    width: min(92vw, 420px);
+    padding: 24px 22px 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(0, 255, 255, 0.35);
+    background: linear-gradient(135deg, rgba(6, 16, 28, 0.95), rgba(10, 24, 38, 0.98));
+    box-shadow: 0 0 35px rgba(0, 255, 255, 0.22), inset 0 0 20px rgba(255,255,255,0.04);
+    transform: translateY(12px) scale(0.96);
+    transition: transform 0.25s ease;
+}
+
+.confirm-overlay.active .confirm-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.confirm-title {
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: 1.2px;
+    color: #00eeff;
+    text-shadow: 0 0 12px rgba(0, 255, 255, 0.45);
+    margin-bottom: 10px;
+}
+
+.confirm-message {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: #e6f8ff;
+    margin-bottom: 20px;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.confirm-btn {
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.confirm-btn.cancel-btn {
+    background: rgba(255,255,255,0.05);
+    color: #cfefff;
+}
+
+.confirm-btn.cancel-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.confirm-btn.confirm-btn-primary {
+    background: linear-gradient(135deg, rgba(255, 0, 80, 0.22), rgba(180, 0, 60, 0.16));
+    color: #ffd9e6;
+    border-color: rgba(255, 0, 80, 0.35);
+    box-shadow: 0 0 14px rgba(255, 0, 80, 0.18);
+}
+
+.confirm-btn.confirm-btn-primary:hover {
+    background: linear-gradient(135deg, rgba(255, 0, 80, 0.35), rgba(180, 0, 60, 0.25));
+    box-shadow: 0 0 18px rgba(255, 0, 80, 0.28);
 }
 
 .control-btn {
@@ -953,6 +1043,16 @@ body.lang-en .counter-title {
 <div class="top-controls">
 <button aria-label="通知・サウンド設定" class="control-btn settings-btn" id="settingsBtn" onclick="toggleModal(true)">⚙</button>
 </div>
+<div class="confirm-overlay" id="resetConfirmOverlay" onclick="if (event.target === this) closeResetConfirm()">
+<div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="resetConfirmTitle">
+<div class="confirm-title" id="resetConfirmTitle">Reset counters?</div>
+<div class="confirm-message" id="resetConfirmMessage">Do you want to reset all counter values to 0?</div>
+<div class="confirm-actions">
+<button class="confirm-btn cancel-btn" onclick="closeResetConfirm()">Cancel</button>
+<button class="confirm-btn confirm-btn-primary" onclick="confirmResetAllCounts()">Reset</button>
+</div>
+</div>
+</div>
 <div class="frame" style='background-image: url("abyss_wait.jpg");'>
 <div class="inner">
 <div class="layout-left-zone">
@@ -996,7 +1096,7 @@ body.lang-en .counter-title {
 </div>
 </div>
 <div class="counter-actions">
-<button class="control-btn reset-btn" onclick="resetAllCounts()">Reset All</button>
+<button class="control-btn reset-btn" onclick="openResetConfirm()">Reset All</button>
 </div>
 <div class="sub-message sub-wait" id="subMessage" style="">
 <div style="font-size:clamp(1rem,4vw,2.2rem); font-weight:900; letter-spacing:2px; text-align:center;">
@@ -1728,19 +1828,36 @@ function updateCounterDisplay(type) {
     }
 }
 
-function resetAllCounts() {
+function openResetConfirm() {
     const lang = i18n[currentLang];
-    if(confirm(lang.clearConfirm)) {
-        counts.hunting = 0;
-        counts.relic = 0;
-        counts.broken = 0;
-        localStorage.setItem("abyss_hunting", 0);
-        localStorage.setItem("abyss_relic", 0);
-        localStorage.setItem("abyss_broken", 0);
-        updateCounterDisplay('hunting');
-        updateCounterDisplay('relic');
-        updateCounterDisplay('broken');
+    const messageEl = document.getElementById('resetConfirmMessage');
+    if (messageEl) {
+        messageEl.textContent = lang.clearConfirm;
     }
+    document.getElementById('resetConfirmOverlay').classList.add('active');
+    document.body.classList.add('modal-open');
+}
+
+function closeResetConfirm() {
+    document.getElementById('resetConfirmOverlay').classList.remove('active');
+    document.body.classList.remove('modal-open');
+}
+
+function confirmResetAllCounts() {
+    counts.hunting = 0;
+    counts.relic = 0;
+    counts.broken = 0;
+    localStorage.setItem("abyss_hunting", 0);
+    localStorage.setItem("abyss_relic", 0);
+    localStorage.setItem("abyss_broken", 0);
+    updateCounterDisplay('hunting');
+    updateCounterDisplay('relic');
+    updateCounterDisplay('broken');
+    closeResetConfirm();
+}
+
+function resetAllCounts() {
+    confirmResetAllCounts();
 }
 
 /* ===================================================
