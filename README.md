@@ -1,5 +1,3 @@
-# OH Starfall Daily Tracker
-
 This project is a personal-use, browser-based tracker for Once Human daily events and timers. It is built as a standalone HTML file, so you can open it directly in any modern web browser.
 
 ## What it does
