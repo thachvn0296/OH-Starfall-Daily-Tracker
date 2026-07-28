@@ -1477,86 +1477,54 @@ function updateMuteUI() {
 }
 
 /* ===================================================
-   SERVER TIME SYNC
-   端末のシステムクロックがズレていても全員が同じ基準時刻で
-   タイマーを表示できるよう、自前サーバーのレスポンスヘッダー
-   (Date) から「サーバー時刻 - 端末時刻」のオフセットを算出する。
-   取得できない場合はオフセット0（端末時計）にフォールバックする。
+   LOCAL JST CLOCK
+   The timer uses Japan Standard Time directly so it no longer
+   depends on the external subscription endpoint.
 =================================================== */
-const SUBSCRIBE_URL = 'https://tool.oncehumanjp.com/subscribe.php';
-const FALLBACK_TIME_API = 'https://worldclockapi.com/api/json/utc/now';
-const SERVER_TIME_CORRECTION_MS = 0;
-let serverTimeOffset = -16000; // ms。 実時刻 = Date.now() + serverTimeOffset
+const TIMEZONE = 'Asia/Tokyo';
+let serverTimeOffset = -16000; // ms. Actual time = Date.now() + serverTimeOffset
 
-async function syncServerTime(){
-    const t0 = Date.now();
+function getJstDate() {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: TIMEZONE,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    });
 
-    try {
-        // GET/HEADどちらでも良いが、CORSで確実にDateヘッダーが読めるよう
-        // 同一オリジン想定のエンドポイントへ軽量リクエストを送る。
-        // no-storeでキャッシュからのDateヘッダー誤読を防止。
-        const res = await fetch(SUBSCRIBE_URL, { method: 'HEAD', cache: 'no-store' });
-        const t1 = Date.now();
-
-        const serverDateHeader = res.headers.get('Date');
-        if (serverDateHeader) {
-            const serverTime = new Date(serverDateHeader).getTime();
-            if (!Number.isNaN(serverTime)) {
-                const rtt = t1 - t0;
-                const estimatedServerTimeAtT1 = serverTime + (rtt / 2);
-                const localTimeAtMeasurement = t0 + (rtt / 2);
-
-                serverTimeOffset = estimatedServerTimeAtT1 - localTimeAtMeasurement + SERVER_TIME_CORRECTION_MS;
-                console.log(`[TimeSync] serverTimeOffset = ${serverTimeOffset.toFixed(0)}ms (RTT: ${rtt}ms, correction: ${SERVER_TIME_CORRECTION_MS}ms)`);
-                return;
-            }
-            console.warn('[TimeSync] Dateヘッダーの解析に失敗しました。');
-        } else {
-            console.warn('[TimeSync] Dateヘッダーが取得できませんでした。');
+    const parts = formatter.formatToParts(new Date(Date.now() + serverTimeOffset));
+    const values = {};
+    for (const part of parts) {
+        if (part.type !== 'literal') {
+            values[part.type] = part.value;
         }
-    } catch (e) {
-        console.warn('[TimeSync] subscribe.php 時刻同期に失敗しました。', e);
     }
 
-    // Fallback to a reliable UTC time API for local/off-origin use.
-    try {
-        const fallbackStart = Date.now();
-        const res = await fetch(FALLBACK_TIME_API, { cache: 'no-store' });
-        const fallbackEnd = Date.now();
-        const data = await res.json();
+    return new Date(
+        Date.UTC(
+            Number(values.year),
+            Number(values.month) - 1,
+            Number(values.day),
+            Number(values.hour),
+            Number(values.minute),
+            Number(values.second)
+        )
+    );
+}
 
-        if (data && typeof data.currentDateTime === 'string') {
-            const serverTime = new Date(data.currentDateTime).getTime();
-            if (!Number.isNaN(serverTime)) {
-                const rtt = fallbackEnd - fallbackStart;
-                const estimatedServerTimeAtT1 = serverTime + (rtt / 2);
-                const localTimeAtMeasurement = fallbackStart + (rtt / 2);
-
-                serverTimeOffset = estimatedServerTimeAtT1 - localTimeAtMeasurement + SERVER_TIME_CORRECTION_MS;
-                console.log(`[TimeSync] fallback serverTimeOffset = ${serverTimeOffset.toFixed(0)}ms (RTT: ${rtt}ms, correction: ${SERVER_TIME_CORRECTION_MS}ms)`);
-                return;
-            }
-            console.warn('[TimeSync] フォールバック時刻APIのタイムスタンプ解析に失敗しました。');
-        } else {
-            console.warn('[TimeSync] フォールバック時刻APIのレスポンスが不正です。');
-        }
-    } catch (e) {
-        console.warn('[TimeSync] フォールバック時刻APIの取得に失敗しました。', e);
-    }
-
-    // 失敗時はオフセット0のまま＝端末時計にフォールバック
+async function syncServerTime() {
+    return Promise.resolve();
 }
 
 /* ===================================================
    TIMER LOGIC
 =================================================== */
 function updateGravityAbyssTimer(){
-    // serverTimeOffset: サーバー時刻 - 端末時刻 (ms)。syncServerTime()で算出。
-    // 端末の時計がズレていても、この補正によって全員が同じ基準時刻を見るようになる。
-    const now = new Date(Date.now() + serverTimeOffset);
-    // Date.now()は常にUTC基準のミリ秒なので、getTimezoneOffset()による補正は不要かつ誤り
-    // （端末のタイムゾーン設定に応じて二重に時刻がズレるバグの原因だった）。
-    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    const jst = getJstDate();
 
     const minute = jst.getMinutes();
     const second = jst.getSeconds();
