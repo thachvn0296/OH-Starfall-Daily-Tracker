@@ -6,7 +6,7 @@ This project is a personal-use, browser-based tracker for Once Human daily event
 - Works locally without needing to install anything
 
 ## How to use
-1. Open [OH Timer.html](OH%20Timer.html) in your browser; or you can use this [Live Web Page](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/).
+1. Open [OH Timer.html](OH%20Timer.html) in your browser; or you can use this [Live Web Page](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/OH%20Timer.html).
 2. Use the controls on the page to view and monitor the relevant timers and counters.
 3. If you want notifications, allow browser notifications when prompted.
 
