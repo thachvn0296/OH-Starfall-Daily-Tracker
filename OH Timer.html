@@ -1827,7 +1827,12 @@ function loadSavedCounts() {
     }
 
     const savedLang = localStorage.getItem("abyss_lang");
-    if (savedLang !== null) currentLang = savedLang;
+    if (savedLang === "en" || savedLang === "ja") {
+        currentLang = savedLang;
+    } else {
+        currentLang = "en";
+        localStorage.setItem("abyss_lang", currentLang);
+    }
     applyLanguage(); 
 }
 
