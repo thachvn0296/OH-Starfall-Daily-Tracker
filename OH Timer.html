@@ -144,6 +144,19 @@ body.bg-off .frame {
     margin-bottom: 20px;
 }
 
+#starfallNoticeOverlay .confirm-title {
+    font-size: 1.25rem;
+}
+
+#starfallNoticeOverlay .confirm-message {
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+#starfallNoticeOverlay .confirm-btn {
+    font-size: 0.95rem;
+}
+
 .confirm-actions {
     display: flex;
     justify-content: flex-end;
@@ -1056,6 +1069,15 @@ body.lang-en .counter-title {
 </div>
 </div>
 </div>
+<div class="confirm-overlay" id="starfallNoticeOverlay" onclick="if (event.target === this) closeStarfallNotice()">
+<div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="starfallNoticeTitle">
+<div class="confirm-title" id="starfallNoticeTitle">Announcement</div>
+<div class="confirm-message" id="starfallNoticeMessage">Season 4 Starfall has ended. This website is currently not being monitored or updated and will remain so until further notice.</div>
+<div class="confirm-actions">
+<button class="confirm-btn confirm-btn-primary" onclick="closeStarfallNotice()">Dismiss</button>
+</div>
+</div>
+</div>
 <div class="frame" style='background-image: url("abyss_wait.jpg");'>
 <div class="inner">
 <div class="layout-left-zone">
@@ -1837,6 +1859,20 @@ function closeResetConfirm() {
     document.body.classList.remove('modal-open');
 }
 
+function openStarfallNotice() {
+    const overlay = document.getElementById('starfallNoticeOverlay');
+    if (!overlay) return;
+    overlay.classList.add('active');
+    document.body.classList.add('modal-open');
+}
+
+function closeStarfallNotice() {
+    const overlay = document.getElementById('starfallNoticeOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('active');
+    document.body.classList.remove('modal-open');
+}
+
 function confirmResetAllCounts() {
     counts.hunting = 0;
     counts.relic = 0;
@@ -1930,6 +1966,7 @@ loadNotifySettings();
 loadSavedCounts();
 loadSavedLayout();
 loadBackgroundState();
+openStarfallNotice();
 
 // Start the timer after syncing the local clock offset.
 // Show the timer immediately once with the base clock, then update it with the corrected value.
