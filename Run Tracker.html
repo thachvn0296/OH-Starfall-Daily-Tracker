@@ -11,32 +11,33 @@
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;padding:24px 16px 48px;background:radial-gradient(ellipse at 10% 0,rgba(42,168,255,.12),transparent 40%),radial-gradient(ellipse at 95% 100%,rgba(255,181,61,.08),transparent 42%),var(--bg);color:var(--text);font-family:'Teko',sans-serif}
 button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+body{font-size:18px}
 button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .shell{max-width:980px;margin:0 auto}
 header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 16px;flex-direction:row-reverse;}
 .title{margin:0;font:900 clamp(1.35rem,5vw,2rem) 'Teko',sans-serif;letter-spacing:.09em}
-.subtitle{margin-top:7px;color:var(--sub);font-size:.77rem;letter-spacing:.08em}
+.subtitle{margin-top:7px;color:var(--sub);font-size:1rem;letter-spacing:.08em}
 .nav{display:flex;gap:8px;flex-wrap:wrap}
-.nav a,.button{border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:rgba(255,255,255,.04);color:var(--text);font-size:.78rem;text-decoration:none}
+.nav a,.button{border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:rgba(255,255,255,.04);color:var(--text);font-size:1rem;text-decoration:none}
 .nav a:hover,.button:hover{border-color:rgba(85,199,255,.5);background:rgba(85,199,255,.08)}
 .layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 .panel{min-width:0;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,rgba(20,24,36,.94),rgba(12,14,22,.96));box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.panel h2{margin:0 0 14px;color:#aab4c8;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.panel h2{margin:0 0 14px;color:#aab4c8;font-size:1.05rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .hero{grid-column:1/-1}
 .session{display:flex;justify-content:space-between;align-items:center;gap:14px}
 .elapsed{font:900 clamp(1.5rem,5vw,2.4rem) 'Teko',sans-serif;font-variant-numeric:tabular-nums;color:var(--blue)}
 .session button,.actions button,.pity-actions button{border:1px solid rgba(85,199,255,.28);border-radius:9px;padding:10px 13px;background:rgba(85,199,255,.09);font-weight:700}
-.progress-label{display:flex;justify-content:space-between;gap:12px;margin:22px 0 8px;color:var(--sub);font-size:.82rem}
+.progress-label{display:flex;justify-content:space-between;gap:12px;margin:22px 0 8px;color:var(--sub);font-size:1.05rem}
 .progress-label b{color:var(--text)}
-.tier-line{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:.73rem;color:var(--sub)}
+.tier-line{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:.95rem;color:var(--sub)}
 .tier-line b{color:var(--tracker-tier,var(--blue));letter-spacing:.08em}
 .bar{height:12px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.08)}
 .bar span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2aa8ff,#2dff9a,#ffd633);transition:width .25s}
 .stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .stat{padding:13px;border:1px solid rgba(255,255,255,.07);border-radius:10px;background:rgba(255,255,255,.025)}
-.stat span{display:block;color:var(--sub);font-size:.73rem}
-.stat b{display:block;margin-top:7px;font:700 1.15rem 'Teko',sans-serif;font-variant-numeric:tabular-nums}
-.stat b#runSpeed{font-size:.82rem;line-height:1.4;overflow-wrap:anywhere}
+.stat span{display:block;color:var(--sub);font-size:.95rem}
+.stat b{display:block;margin-top:7px;font:700 1.5rem 'Teko',sans-serif;font-variant-numeric:tabular-nums}
+.stat b#runSpeed{font-size:1.05rem;line-height:1.4;overflow-wrap:anywhere}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .actions button:first-child{flex:1}
 .actions .quiet{border-color:var(--line);background:rgba(255,255,255,.035)}
@@ -44,7 +45,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 .quick-adds{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .quick-adds button{flex:1;min-width:76px;border:1px solid rgba(85,199,255,.25);border-radius:8px;padding:8px;background:rgba(85,199,255,.06);color:var(--blue);font-weight:700}
 .quick-adds button:hover{background:rgba(85,199,255,.14)}
-.quick-editor{margin-top:12px;color:var(--sub);font-size:.8rem}
+.quick-editor{margin-top:12px;color:var(--sub);font-size:1rem}
 .quick-editor summary,.stream-settings summary{cursor:pointer;color:var(--blue);font-weight:700}
 .quick-fields{display:grid;gap:7px;margin-top:10px}
 .quick-row{display:grid;grid-template-columns:minmax(0,1fr) 82px 36px;gap:6px}
@@ -54,27 +55,27 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 .quick-editor-actions button{flex:1}
 .quick-editor-actions .quiet{color:var(--sub)}
 .quick-editor-actions button:disabled{opacity:.4}
-.shortcut-note{margin-top:10px;color:var(--sub);font-size:.7rem;line-height:1.6}
-.pity-count{font:900 2rem 'Teko',sans-serif;color:var(--gold);font-variant-numeric:tabular-nums}
+.shortcut-note{margin-top:10px;color:var(--sub);font-size:.9rem;line-height:1.6}
+.pity-count{font:900 2.5rem 'Teko',sans-serif;color:var(--gold);font-variant-numeric:tabular-nums}
 .pips{display:grid;grid-template-columns:repeat(5,1fr) 1.3fr;gap:6px;margin:14px 0}
 .pip{display:grid;place-items:center;min-height:36px;border:1px solid rgba(255,255,255,.14);border-radius:6px;color:#70798c}
 .pip.on{border-color:transparent;background:linear-gradient(180deg,#ffd27a,#e0861a);color:#1b1002}
-.pip.flash{font-size:.72rem;color:#c69752}
+.pip.flash{font-size:.95rem;color:#c69752}
 .pip.flash.on{background:linear-gradient(180deg,#fff1c2,#ffb53d);color:#251500;box-shadow:0 0 18px rgba(255,181,61,.3)}
-.pity-message{min-height:2.5em;color:var(--sub);font-size:.82rem;line-height:1.5}
+.pity-message{min-height:2.5em;color:var(--sub);font-size:1.05rem;line-height:1.5}
 .pity-message.ready{color:#ffe2a6}
 .pity-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
-.pity-actions button{font-size:.8rem}
+.pity-actions button{font-size:1rem}
 .pity-actions .fail{border-color:rgba(255,102,120,.3);background:rgba(255,102,120,.08)}
 .pity-actions .flash-action{grid-column:1/-1;border-color:rgba(255,181,61,.3);background:rgba(255,181,61,.08);color:#ffe2a6}
 button:disabled{opacity:.42;cursor:not-allowed}
 .pity-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;text-align:center}
-.pity-stats span{display:block;color:var(--sub);font-size:.7rem}
+.pity-stats span{display:block;color:var(--sub);font-size:.95rem}
 .pity-stats b{display:block;margin-top:6px;font-weight:700}
-.notice{min-height:1.4em;margin-top:12px;color:var(--sub);font-size:.78rem}
+.notice{min-height:1.4em;margin-top:12px;color:var(--sub);font-size:1rem}
 .history{grid-column:1/-1}
 .history-list{display:grid;gap:7px;max-height:200px;overflow:auto}
-.history-item{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:8px;background:rgba(255,255,255,.035);font-size:.8rem}
+.history-item{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:8px;background:rgba(255,255,255,.035);font-size:1.05rem}
 .history-item span:last-child{color:var(--sub)}
 .stream-settings{display:none}
 .stream-options{display:grid;gap:10px;margin-top:10px}
