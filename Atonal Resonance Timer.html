@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b12">
+<title>Dissonant Resonance Timer | Once Human</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;700;900&display=swap');
+:root{color-scheme:dark;--amber:#ffad32;--orange:#ff5d2e;--cyan:#91efff}
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:24px;background:radial-gradient(ellipse at 50% 10%,#25140b 0,#09090d 52%,#030407 100%);color:#fff;font-family:'Teko',sans-serif;display:grid;place-items:center}
+.page{width:min(100%,760px);position:relative;padding:82px 36px 32px;border:1px solid rgba(255,173,50,.35);border-radius:28px;background:linear-gradient(145deg,rgba(18,18,24,.96),rgba(8,8,12,.96));box-shadow:0 0 42px rgba(255,128,24,.12),inset 0 0 32px rgba(255,255,255,.025);overflow:hidden}
+.page:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0,rgba(255,132,34,.12),transparent 58%)}
+.top,.content{position:relative;z-index:1}
+.top{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+a,.notify{border:1px solid rgba(255,173,50,.35);border-radius:8px;padding:9px 13px;background:rgba(255,173,50,.08);color:#ffe0a3;font:700 .72rem 'Teko',sans-serif;text-decoration:none;letter-spacing:.04em}
+a:hover,.notify:hover,.notify[aria-pressed="true"]{background:rgba(255,173,50,.2)}
+.notify{display:none;cursor:pointer}
+.brand{text-align:center;color:#ffca76;font-size:.8rem;letter-spacing:.32em}
+h1{margin:12px 0 24px;text-align:center;font-size:clamp(1.7rem,6vw,3rem);line-height:1.15;letter-spacing:.07em;text-shadow:0 0 26px rgba(255,133,38,.22)}
+.status{width:fit-content;max-width:100%;margin:0 auto 22px;padding:12px 20px;border:1px solid rgba(255,173,50,.35);border-radius:99px;background:rgba(255,120,28,.08);color:#ffd69a;text-align:center;font-size:clamp(.65rem,2.4vw,.9rem);letter-spacing:.08em}
+.status.live{border-color:rgba(255,93,46,.7);background:rgba(255,80,40,.16);color:#ffb08c}
+.clock{display:flex;justify-content:center;align-items:center;gap:14px}
+.unit{width:min(40%,260px);padding:24px 12px 18px;text-align:center;border:1px solid rgba(255,173,50,.3);border-radius:18px;background:linear-gradient(180deg,rgba(255,150,50,.12),rgba(60,25,14,.12));box-shadow:inset 0 0 22px rgba(255,173,50,.04)}
+.value{font-size:clamp(3.2rem,14vw,7.2rem);font-weight:900;line-height:1;color:#fff0d4;text-shadow:0 0 25px rgba(255,164,58,.28);font-variant-numeric:tabular-nums}
+.label{margin-top:8px;color:#c39b6a;font-size:.7rem;letter-spacing:.2em}
+.error{min-height:1.5em;margin-top:12px;color:#ff9e9e;text-align:center;font: .8rem 'Teko',sans-serif}
+@media(max-width:520px){body{padding:12px}.page{padding:78px 16px 24px;border-radius:20px}.top{top:10px;left:10px;right:10px}.top a,.notify{padding:8px 10px;font-size:.62rem}.unit{padding:20px 8px 16px}.clock{gap:8px}}
+</style>
+</head>
+<body>
+<main class="page">
+  <nav class="top" aria-label="Pages">
+    <a href="OH%20Timer.html">Abyss Timer (ENDED)</a>
+    <a href="Run%20Tracker.html">Run Tracker</a>
+    <button class="notify" id="notifyToggle" type="button" aria-pressed="false">Alerts OFF</button>
+  </nav>
+  <div class="content">
+    <h1>DISSONANT RESONANCE</h1>
+    <div class="status" id="status" aria-live="polite">CONNECTING</div>
+    <div class="clock" aria-label="Time remaining">
+      <div class="unit"><div class="value" id="minutes">00</div><div class="label">MIN</div></div>
+      <div class="unit"><div class="value" id="seconds">00</div><div class="label">SEC</div></div>
+    </div>
+    <div class="error" id="message" role="status"></div>
+  </div>
+</main>
+<script>
+(() => {
+  'use strict';
+  const EVENT_START = 15 * 60 - 9.5;
+  const EVENT_END = 45 * 60 - 9.5;
+  const BATTLE_START = 30 * 60 - 9.5;
+  const STORAGE_KEY = 'ohStarfall.atonalAlerts';
+  const $ = id => document.getElementById(id);
+  const status = $('status');
+  const notifyButton = $('notifyToggle');
+  const message = $('message');
+  let alertsEnabled = false;
+  let notified = new Set();
+
+  try {
+    alertsEnabled = localStorage.getItem(STORAGE_KEY) === 'true';
+  } catch (error) {
+    console.error('Could not load notification settings:', error);
+    message.textContent = 'Could not load saved notification settings.';
+  }
+
+  function setAlertButton() {
+    notifyButton.textContent = alertsEnabled ? 'Alerts ON' : 'Alerts OFF';
+    notifyButton.setAttribute('aria-pressed', String(alertsEnabled));
+  }
+
+  function notifyOnce(key, eventHour, title, body) {
+    const stamp = eventHour + ':' + key;
+    if (!alertsEnabled || notified.has(stamp) || !('Notification' in window) || Notification.permission !== 'granted') return;
+    notified.add(stamp);
+    new Notification(title, { body });
+  }
+
+  function checkAlert(left, windowSeconds, key, hour, title, body) {
+    if (left >= windowSeconds - 2 && left <= windowSeconds) notifyOnce(key, hour, title, body);
+  }
+
+  function update() {
+    const now = new Date();
+    const current = now.getMinutes() * 60 + now.getSeconds() + now.getMilliseconds() / 1000;
+    const hourStamp = Math.floor(Date.now() / 3600000);
+    const active = current >= EVENT_START && current < EVENT_END;
+    const nextEventHour = current < EVENT_START ? hourStamp : hourStamp + 1;
+    const eventLeft = active ? -1 : (current < EVENT_START ? EVENT_START - current : 3600 + EVENT_START - current);
+    const eventEndLeft = active ? EVENT_END - current : -1;
+    const remaining = active ? eventEndLeft : eventLeft;
+    const battleLeft = active && current < BATTLE_START ? BATTLE_START - current : -1;
+
+    status.textContent = active ? 'DISSONANT RESONANCE IN PROGRESS' : 'NEXT DISSONANT RESONANCE STARTS IN';
+    status.classList.toggle('live', active);
+    const displayRemaining = Math.ceil(remaining);
+    $('minutes').textContent = String(Math.floor(displayRemaining / 60)).padStart(2, '0');
+    $('seconds').textContent = String(displayRemaining % 60).padStart(2, '0');
+
+    const eventHour = active ? hourStamp : nextEventHour;
+    checkAlert(eventLeft, 300, 'event-5m', nextEventHour, 'Dissonant Resonance', 'Starts in 5 minutes.');
+    checkAlert(eventLeft, 60, 'event-1m', nextEventHour, 'Dissonant Resonance', 'Starts in 1 minute.');
+    if (active && current >= EVENT_START && current <= EVENT_START + 2) notifyOnce('event-start', hourStamp, 'Dissonant Resonance', 'The event has started.');
+    checkAlert(eventEndLeft, 60, 'event-end-1m', eventHour, 'Dissonant Resonance', 'Ends in 1 minute.');
+    checkAlert(battleLeft, 180, 'battle-3m', hourStamp, 'Resonance Battle', 'Starts in 3 minutes.');
+    checkAlert(battleLeft, 60, 'battle-1m', hourStamp, 'Resonance Battle', 'Starts in 1 minute.');
+    if (active && current >= BATTLE_START && current <= BATTLE_START + 2) notifyOnce('battle-start', hourStamp, 'Resonance Battle', 'The battle has started.');
+  }
+
+  notifyButton.addEventListener('click', async () => {
+    if (!('Notification' in window)) {
+      message.textContent = 'This browser does not support notifications.';
+      return;
+    }
+    try {
+      if (!alertsEnabled && Notification.permission !== 'granted') {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          message.textContent = 'Allow browser notifications to turn alerts on.';
+          return;
+        }
+      }
+      alertsEnabled = !alertsEnabled;
+      try {
+        localStorage.setItem(STORAGE_KEY, String(alertsEnabled));
+      } catch (error) {
+        console.error('Could not save notification settings:', error);
+        message.textContent = 'Could not save notification settings in this browser.';
+      }
+      if (!message.textContent.startsWith('Could not save')) {
+        message.textContent = '';
+      }
+      setAlertButton();
+      update();
+    } catch (error) {
+      console.error('Could not enable browser notifications:', error);
+      message.textContent = 'Could not enable browser notifications.';
+    }
+  });
+
+  setAlertButton();
+  update();
+  setInterval(update, 1000);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') update();
+  });
+})();
+</script>
+</body>
+</html>

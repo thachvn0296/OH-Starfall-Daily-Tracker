@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b12">
+<title>Run Tracker | Once Human</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@400;700;900&display=swap');
+:root{color-scheme:dark;--bg:#080a10;--panel:#11141e;--line:rgba(255,255,255,.1);--text:#f2f5fb;--sub:#929db2;--blue:#55c7ff;--gold:#ffb53d;--red:#ff6678}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:24px 16px 48px;background:radial-gradient(ellipse at 10% 0,rgba(42,168,255,.12),transparent 40%),radial-gradient(ellipse at 95% 100%,rgba(255,181,61,.08),transparent 42%),var(--bg);color:var(--text);font-family:'Teko',sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.shell{max-width:980px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 16px;flex-direction:row-reverse;}
+.title{margin:0;font:900 clamp(1.35rem,5vw,2rem) 'Teko',sans-serif;letter-spacing:.09em}
+.subtitle{margin-top:7px;color:var(--sub);font-size:.77rem;letter-spacing:.08em}
+.nav{display:flex;gap:8px;flex-wrap:wrap}
+.nav a,.button{border:1px solid var(--line);border-radius:9px;padding:9px 12px;background:rgba(255,255,255,.04);color:var(--text);font-size:.78rem;text-decoration:none}
+.nav a:hover,.button:hover{border-color:rgba(85,199,255,.5);background:rgba(85,199,255,.08)}
+.layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.panel{min-width:0;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,rgba(20,24,36,.94),rgba(12,14,22,.96));box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.panel h2{margin:0 0 14px;color:#aab4c8;font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.hero{grid-column:1/-1}
+.session{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.elapsed{font:900 clamp(1.5rem,5vw,2.4rem) 'Teko',sans-serif;font-variant-numeric:tabular-nums;color:var(--blue)}
+.session button,.actions button,.pity-actions button{border:1px solid rgba(85,199,255,.28);border-radius:9px;padding:10px 13px;background:rgba(85,199,255,.09);font-weight:700}
+.progress-label{display:flex;justify-content:space-between;gap:12px;margin:22px 0 8px;color:var(--sub);font-size:.82rem}
+.progress-label b{color:var(--text)}
+.tier-line{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;font-size:.73rem;color:var(--sub)}
+.tier-line b{color:var(--tracker-tier,var(--blue));letter-spacing:.08em}
+.bar{height:12px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.08)}
+.bar span{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2aa8ff,#2dff9a,#ffd633);transition:width .25s}
+.stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{padding:13px;border:1px solid rgba(255,255,255,.07);border-radius:10px;background:rgba(255,255,255,.025)}
+.stat span{display:block;color:var(--sub);font-size:.73rem}
+.stat b{display:block;margin-top:7px;font:700 1.15rem 'Teko',sans-serif;font-variant-numeric:tabular-nums}
+.stat b#runSpeed{font-size:.82rem;line-height:1.4;overflow-wrap:anywhere}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.actions button:first-child{flex:1}
+.actions .quiet{border-color:var(--line);background:rgba(255,255,255,.035)}
+.actions .danger{border-color:rgba(255,102,120,.35);background:rgba(255,102,120,.08);color:#ffb4be}
+.quick-adds{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.quick-adds button{flex:1;min-width:76px;border:1px solid rgba(85,199,255,.25);border-radius:8px;padding:8px;background:rgba(85,199,255,.06);color:var(--blue);font-weight:700}
+.quick-adds button:hover{background:rgba(85,199,255,.14)}
+.quick-editor{margin-top:12px;color:var(--sub);font-size:.8rem}
+.quick-editor summary,.stream-settings summary{cursor:pointer;color:var(--blue);font-weight:700}
+.quick-fields{display:grid;gap:7px;margin-top:10px}
+.quick-row{display:grid;grid-template-columns:minmax(0,1fr) 82px 36px;gap:6px}
+.quick-row input{min-width:0;padding:7px;border:1px solid var(--line);border-radius:6px;background:#080a10;color:var(--text);font:inherit}
+.quick-row button,.quick-editor-actions button,.stream-settings button{border:1px solid var(--line);border-radius:6px;padding:7px;background:rgba(255,255,255,.04);color:var(--text);font:inherit}
+.quick-editor-actions{display:flex;gap:7px;margin-top:8px}
+.quick-editor-actions button{flex:1}
+.quick-editor-actions .quiet{color:var(--sub)}
+.quick-editor-actions button:disabled{opacity:.4}
+.shortcut-note{margin-top:10px;color:var(--sub);font-size:.7rem;line-height:1.6}
+.pity-count{font:900 2rem 'Teko',sans-serif;color:var(--gold);font-variant-numeric:tabular-nums}
+.pips{display:grid;grid-template-columns:repeat(5,1fr) 1.3fr;gap:6px;margin:14px 0}
+.pip{display:grid;place-items:center;min-height:36px;border:1px solid rgba(255,255,255,.14);border-radius:6px;color:#70798c}
+.pip.on{border-color:transparent;background:linear-gradient(180deg,#ffd27a,#e0861a);color:#1b1002}
+.pip.flash{font-size:.72rem;color:#c69752}
+.pip.flash.on{background:linear-gradient(180deg,#fff1c2,#ffb53d);color:#251500;box-shadow:0 0 18px rgba(255,181,61,.3)}
+.pity-message{min-height:2.5em;color:var(--sub);font-size:.82rem;line-height:1.5}
+.pity-message.ready{color:#ffe2a6}
+.pity-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.pity-actions button{font-size:.8rem}
+.pity-actions .fail{border-color:rgba(255,102,120,.3);background:rgba(255,102,120,.08)}
+.pity-actions .flash-action{grid-column:1/-1;border-color:rgba(255,181,61,.3);background:rgba(255,181,61,.08);color:#ffe2a6}
+button:disabled{opacity:.42;cursor:not-allowed}
+.pity-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;text-align:center}
+.pity-stats span{display:block;color:var(--sub);font-size:.7rem}
+.pity-stats b{display:block;margin-top:6px;font-weight:700}
+.notice{min-height:1.4em;margin-top:12px;color:var(--sub);font-size:.78rem}
+.history{grid-column:1/-1}
+.history-list{display:grid;gap:7px;max-height:200px;overflow:auto}
+.history-item{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:8px;background:rgba(255,255,255,.035);font-size:.8rem}
+.history-item span:last-child{color:var(--sub)}
+.stream-settings{display:none}
+.stream-options{display:grid;gap:10px;margin-top:10px}
+.overlay-checks{display:flex;gap:12px;flex-wrap:wrap}
+.overlay-checks label{display:flex;align-items:center;gap:5px}
+.overlay-config{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.overlay-config button[aria-pressed="true"]{border-color:var(--blue);color:var(--blue)}
+.overlay-config input{accent-color:var(--blue)}
+.overlay-view{display:none}
+body.overlay-mode{min-height:100vh;padding:12px;background:transparent}
+body.overlay-mode .shell{display:none}
+body.overlay-mode .overlay-view{display:grid;grid-template-columns:repeat(3,minmax(160px,1fr));gap:8px;align-items:start;width:max-content;max-width:100%;transform:scale(var(--overlay-scale,1));transform-origin:top left}
+.overlay-card{min-width:160px;padding:12px 16px;border:1px solid rgba(85,199,255,.35);border-left:4px solid var(--blue);border-radius:8px;background:rgba(8,10,16,.88);color:#fff;text-shadow:0 1px 5px #000}
+.overlay-card[hidden]{display:none}
+.overlay-card span,.overlay-card small{display:block;color:#aab4c8;font-size:.72rem}
+.overlay-card b{display:block;margin:4px 0;font:900 1.8rem 'Teko',sans-serif}
+.overlay-card[data-kind="pity"]{border-left-color:var(--gold)}
+.overlay-card[data-kind="boxes"]{border-left-color:var(--red)}
+.overlay-view[data-bg="clear"] .overlay-card{background:transparent;border-color:transparent;text-shadow:0 1px 3px #000,0 0 8px #000}
+.overlay-view[data-bg="green"]{background:#00ff00}
+body.overlay-mode .overlay-view[data-bg="green"]{min-height:100vh;min-width:100vw;padding:12px}
+@media(max-width:650px){body{padding:16px 10px 32px}header{align-items:flex-start;flex-direction:column}.layout{grid-template-columns:1fr}.hero,.history{grid-column:auto}.panel{padding:15px}.session{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){body.overlay-mode .overlay-view{grid-template-columns:1fr;min-width:min(100vw,360px)}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header>
+    <nav class="nav" aria-label="Pages"><a href="OH%20Timer.html">Abyss Timer (ENDED)</a><a href="Atonal%20Resonance%20Timer.html">Dissonant Timer</a></nav>
+  </header>
+  <div class="layout">
+    <section class="panel hero" aria-labelledby="sessionHeading">
+      <h2 id="sessionHeading">Session &amp; consecutive runs</h2>
+      <div class="session"><div class="elapsed" id="elapsed">00:00:00</div><button id="resetTimer" type="button">Reset session timer</button></div>
+      <div class="progress-label"><span>Runs since last drop</span><b><span id="runs">0</span> RUNS</b></div>
+      <div class="tier-line"><b id="tier">LOW</b><span id="tierProgress">0.0% toward 1,000</span></div>
+      <div class="bar" role="progressbar" aria-label="Runs toward 1,000" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0"><span id="progress"></span></div>
+      <div class="actions">
+        <button id="addRun" type="button">＋ 1 run</button>
+        <button id="removeRun" class="quiet" type="button" aria-label="Remove one run">− 1</button>
+        <button id="undo" class="quiet" type="button" disabled>Undo</button>
+      </div>
+      <div class="quick-adds" id="quickAdds" aria-label="Quick run increments"></div>
+      <details class="quick-editor">
+        <summary>Edit quick-add buttons</summary>
+        <div class="quick-fields" id="quickFields"></div>
+        <div class="quick-editor-actions">
+          <button id="addQuickButton" type="button">＋ Add button</button>
+          <button id="resetQuickButtons" class="quiet" type="button">Restore defaults</button>
+        </div>
+      </details>
+    </section>
+    <section class="panel">
+      <h2>Run &amp; drop statistics</h2>
+      <div class="stat-grid">
+        <div class="stat"><span>Total runs</span><b id="totalRuns">0</b></div>
+        <div class="stat"><span>Perfect mod boxes</span><b id="boxes">0</b></div>
+        <div class="stat"><span>Average runs / box</span><b id="average">—</b></div>
+        <div class="stat"><span>Longest dry streak</span><b id="best">0</b></div>
+        <div class="stat"><span>Drop rate</span><b id="dropRate">—</b></div>
+        <div class="stat"><span>Runs to 1,000</span><b id="remaining">1,000</b></div>
+        <div class="stat"><span>Runs today</span><b id="todayRuns">0</b></div>
+        <div class="stat"><span>Run pace</span><b id="runSpeed">—</b></div>
+      </div>
+      <div class="actions">
+        <button id="recordDrop" type="button">＋ Record box drop</button>
+        <button id="removeDrop" class="quiet" type="button" aria-label="Remove the last box drop">− Remove box</button>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>17-mod consecutive failures</h2>
+      <div class="pity-count"><span id="pityCount">0</span> <small>/ 5</small></div>
+      <div class="pips" aria-label="Pity progression">
+        <div class="pip">1</div><div class="pip">2</div><div class="pip">3</div><div class="pip">4</div><div class="pip">5</div><div class="pip flash">⚡</div>
+      </div>
+      <div class="pity-message" id="pityMessage" aria-live="polite">No consecutive failures recorded.</div>
+      <div class="pity-actions">
+        <button id="pityFail" class="fail" type="button">✕ Failure +1</button>
+        <button id="pitySuccess" type="button">Success · reset</button>
+        <button id="pityFlash" class="flash-action" type="button">⚡ Flash mod · reset</button>
+        <button id="pityUndo" class="quiet" type="button">− 1 failure</button>
+      </div>
+      <div class="pity-stats">
+        <div><span>Total failures</span><b id="totalFailures">0</b></div>
+        <div><span>Successes</span><b id="successes">0</b></div>
+        <div><span>Flash mods</span><b id="flashes">0</b></div>
+      </div>
+      <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    </section>
+    <section class="panel history">
+      <h2>Recent box drops</h2>
+      <div class="history-list" id="history"><div class="history-item"><span>No drops recorded yet.</span></div></div>
+      <div class="actions"><button id="clearData" class="danger" type="button">Clear all tracker data</button></div>
+      <details class="stream-settings">
+        <summary>OBS / stream overlay</summary>
+        <div class="stream-options">
+          <div class="overlay-checks">
+            <label><input id="overlayRunsToggle" type="checkbox" checked> Runs</label>
+            <label><input id="overlayPityToggle" type="checkbox" checked> 17-mod pity</label>
+            <label><input id="overlayBoxesToggle" type="checkbox" checked> Boxes</label>
+          </div>
+          <div class="overlay-config">
+            <span>Background</span>
+            <button type="button" data-overlay-bg="clear" aria-pressed="false">Clear</button>
+            <button type="button" data-overlay-bg="dim" aria-pressed="true">Dim</button>
+            <button type="button" data-overlay-bg="green" aria-pressed="false">Green</button>
+          </div>
+          <label class="overlay-config">Size <input id="overlayScale" type="range" min="0.8" max="1.7" step="0.1" value="1"></label>
+          <div class="actions">
+            <button id="openOverlay" type="button">Open overlay window</button>
+            <button id="copyOverlayUrl" class="quiet" type="button">Copy OBS URL</button>
+          </div>
+          <div class="shortcut-note">Hotkeys: F13 add run · F14 remove run · F15/F16 add/remove box · F17 reset timer · F18 undo · F19 failure · F20 success</div>
+        </div>
+      </details>
+    </section>
+  </div>
+</main>
+<div class="overlay-view" id="overlayView" role="region" aria-label="Run tracker overlay">
+  <section class="overlay-card" id="overlayRuns" data-kind="runs"><span>RUNS SINCE DROP</span><b id="overlayRunCount">0</b><small id="overlayRunGoal">1,000 runs to goal</small></section>
+  <section class="overlay-card" id="overlayPity" data-kind="pity"><span>17-MOD FAILURES</span><b id="overlayPityCount">0 / 5</b><small id="overlayPityMessage">No consecutive failures.</small></section>
+  <section class="overlay-card" id="overlayBoxes" data-kind="boxes"><span>PERFECT MOD BOXES</span><b id="overlayBoxCount">0</b><small id="overlayBoxAverage">Average — runs / box</small></section>
+</div>
+<script>
+(() => {
+  'use strict';
+  const KEY = 'ohStarfall.runTracker.v1';
+  const QUICK_KEY = KEY + '.quickAdds';
+  const OVERLAY_KEY = KEY + '.overlay';
+  const PITY_LIMIT = 5;
+  const RUN_GOAL = 1000;
+  const $ = id => document.getElementById(id);
+  const todayKey = () => {
+    const now = new Date();
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  };
+  const quickDefaults = () => [
+    { label: '+1 run', amount: 1 },
+    { label: '+3 runs', amount: 3 },
+    { label: '+4 runs', amount: 4 }
+  ];
+  const overlayDefaults = () => ({ runs: true, pity: true, boxes: true, background: 'dim', scale: 1 });
+  const defaults = () => ({
+    runs: 0, totalRuns: 0, boxes: 0, best: 0, history: [],
+    pity: 0, failures: 0, successes: 0, flashes: 0, sessionStartedAt: Date.now(),
+    todayDate: todayKey(), todayRuns: 0, firstRunAt: 0
+  });
+  const integer = value => Number.isSafeInteger(value) && value >= 0 ? value : 0;
+  let state = defaults();
+  let undoState = null;
+  let noticeTimer;
+  const overlayMode = new URLSearchParams(location.search).get('overlay') === '1';
+  if (overlayMode) document.body.classList.add('overlay-mode');
+
+  function readQuickAdds() {
+    try {
+      const data = JSON.parse(localStorage.getItem(QUICK_KEY));
+      if (Array.isArray(data)) {
+        const valid = data.slice(0, 8).filter(item => item && typeof item === 'object')
+          .map(item => ({
+            label: String(item.label || '').slice(0, 18),
+            amount: Math.min(100, Math.max(1, Math.floor(Number(item.amount) || 1)))
+          }));
+        if (valid.length) return valid;
+      }
+    } catch (error) {
+      console.error('Could not load quick-add buttons:', error);
+    }
+    return quickDefaults();
+  }
+
+  let quickAdds = readQuickAdds();
+  let overlaySettings = overlayDefaults();
+
+  function loadOverlaySettings() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(OVERLAY_KEY) || '{}');
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
+        overlaySettings = {
+          runs: saved.runs !== false,
+          pity: saved.pity !== false,
+          boxes: saved.boxes !== false,
+          background: ['clear', 'dim', 'green'].includes(saved.background) ? saved.background : 'dim',
+          scale: Math.min(1.7, Math.max(0.8, Number(saved.scale) || 1))
+        };
+      }
+    } catch (error) {
+      console.error('Could not load overlay settings:', error);
+      showNotice('Could not load saved overlay settings.');
+    }
+  }
+
+  function saveOverlaySettings() {
+    try {
+      localStorage.setItem(OVERLAY_KEY, JSON.stringify(overlaySettings));
+    } catch (error) {
+      console.error('Could not save overlay settings:', error);
+      showNotice('Could not save overlay settings in this browser.');
+    }
+  }
+
+  function load() {
+    let stored;
+    try {
+      stored = localStorage.getItem(KEY);
+    } catch (error) {
+      console.error('Could not access run tracker data:', error);
+      $('notice').textContent = 'Could not access saved data in this browser.';
+      return;
+    }
+    if (!stored) return;
+    try {
+      const data = JSON.parse(stored);
+      if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Stored tracker data is not an object.');
+      const isToday = data.todayDate === todayKey();
+      state = {
+        runs: integer(data.runs),
+        totalRuns: integer(data.totalRuns),
+        boxes: integer(data.boxes),
+        best: integer(data.best),
+        history: Array.isArray(data.history) ? data.history.filter(Number.isSafeInteger).filter(n => n >= 0).slice(-100) : [],
+        pity: Math.min(integer(data.pity), PITY_LIMIT),
+        failures: integer(data.failures),
+        successes: integer(data.successes),
+        flashes: integer(data.flashes),
+        sessionStartedAt: Number.isFinite(data.sessionStartedAt) && data.sessionStartedAt > 0 ? data.sessionStartedAt : Date.now(),
+        todayDate: todayKey(),
+        todayRuns: isToday ? integer(data.todayRuns) : 0,
+        firstRunAt: isToday && Number.isFinite(data.firstRunAt) && data.firstRunAt > 0 ? data.firstRunAt : 0
+      };
+    } catch (error) {
+      console.error('Could not load run tracker data:', error);
+      $('notice').textContent = 'Saved tracker data could not be read. New changes will be saved over it.';
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (error) {
+      console.error('Could not save run tracker data:', error);
+      $('notice').textContent = 'Could not save tracker data in this browser.';
+    }
+  }
+
+  function snapshot() {
+    checkDayRollover();
+    undoState = JSON.parse(JSON.stringify(state));
+  }
+
+  function checkDayRollover() {
+    const today = todayKey();
+    if (state.todayDate !== today) {
+      state.todayDate = today;
+      state.todayRuns = 0;
+      state.firstRunAt = 0;
+      save();
+      return true;
+    }
+    return false;
+  }
+
+  function showNotice(text) {
+    $('notice').textContent = text;
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(() => { $('notice').textContent = ''; }, 3500);
+  }
+
+  function fmt(value) {
+    return value.toLocaleString();
+  }
+
+  function renderOverlay() {
+    const overlay = $('overlayView');
+    overlay.dataset.bg = overlaySettings.background;
+    overlay.style.setProperty('--overlay-scale', String(overlaySettings.scale));
+    $('overlayRuns').hidden = !overlaySettings.runs;
+    $('overlayPity').hidden = !overlaySettings.pity;
+    $('overlayBoxes').hidden = !overlaySettings.boxes;
+    $('overlayRunsToggle').checked = overlaySettings.runs;
+    $('overlayPityToggle').checked = overlaySettings.pity;
+    $('overlayBoxesToggle').checked = overlaySettings.boxes;
+    $('overlayScale').value = String(overlaySettings.scale);
+    document.querySelectorAll('[data-overlay-bg]').forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.overlayBg === overlaySettings.background));
+    });
+  }
+
+  function renderQuickButtons() {
+    const container = $('quickAdds');
+    container.replaceChildren();
+    quickAdds.forEach(item => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = item.label || ('+' + item.amount + ' runs');
+      button.setAttribute('aria-label', 'Add ' + item.amount + ' runs');
+      button.addEventListener('click', () => addRun(item.amount));
+      container.appendChild(button);
+    });
+  }
+
+  function saveQuickAdds() {
+    try {
+      localStorage.setItem(QUICK_KEY, JSON.stringify(quickAdds));
+    } catch (error) {
+      console.error('Could not save quick-add buttons:', error);
+      showNotice('Could not save quick-add buttons in this browser.');
+    }
+  }
+
+  function renderQuickEditor() {
+    const container = $('quickFields');
+    container.replaceChildren();
+    quickAdds.forEach((item, index) => {
+      const row = document.createElement('div');
+      row.className = 'quick-row';
+      const label = document.createElement('input');
+      label.type = 'text';
+      label.maxLength = 18;
+      label.value = item.label;
+      label.placeholder = 'Button label';
+      label.setAttribute('aria-label', 'Quick-add button label');
+      label.addEventListener('input', () => {
+        quickAdds[index].label = label.value;
+        saveQuickAdds();
+        renderQuickButtons();
+      });
+      const amount = document.createElement('input');
+      amount.type = 'number';
+      amount.min = '1';
+      amount.max = '100';
+      amount.step = '1';
+      amount.value = String(item.amount);
+      amount.setAttribute('aria-label', 'Runs to add');
+      amount.addEventListener('change', () => {
+        quickAdds[index].amount = Math.min(100, Math.max(1, Math.floor(Number(amount.value) || 1)));
+        amount.value = String(quickAdds[index].amount);
+        saveQuickAdds();
+        renderQuickButtons();
+      });
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', 'Remove quick-add button');
+      remove.addEventListener('click', () => {
+        quickAdds.splice(index, 1);
+        saveQuickAdds();
+        renderQuickButtons();
+        renderQuickEditor();
+        $('addQuickButton').disabled = quickAdds.length >= 8;
+      });
+      row.append(label, amount, remove);
+      container.appendChild(row);
+    });
+    $('addQuickButton').disabled = quickAdds.length >= 8;
+  }
+
+  function render() {
+    checkDayRollover();
+    const tiers = [
+      { min: 1000, name: 'OVER', color: '#c04bff' },
+      { min: 750, name: 'CRIT', color: '#ff6678' },
+      { min: 500, name: 'HIGH', color: '#ffd633' },
+      { min: 250, name: 'RISING', color: '#2dff9a' },
+      { min: 0, name: 'LOW', color: '#55c7ff' }
+    ];
+    const tier = tiers.find(item => state.runs >= item.min);
+    $('tier').textContent = tier.name;
+    document.documentElement.style.setProperty('--tracker-tier', tier.color);
+    $('tierProgress').textContent = (state.runs / RUN_GOAL * 100).toFixed(1) + '% toward 1,000';
+    $('runs').textContent = fmt(state.runs);
+    $('totalRuns').textContent = fmt(state.totalRuns);
+    $('boxes').textContent = fmt(state.boxes);
+    $('average').textContent = state.boxes ? fmt(Math.round(state.totalRuns / state.boxes)) : '—';
+    $('best').textContent = fmt(state.best);
+    $('dropRate').textContent = state.totalRuns ? ((state.boxes / state.totalRuns) * 100).toFixed(2) + '%' : '—';
+    $('remaining').textContent = fmt(Math.max(RUN_GOAL - state.runs, 0));
+    $('progress').style.width = Math.min(state.runs / RUN_GOAL, 1) * 100 + '%';
+    document.querySelector('[role="progressbar"]').setAttribute('aria-valuenow', String(Math.min(state.runs, RUN_GOAL)));
+    $('todayRuns').textContent = fmt(state.todayRuns) + ' runs';
+    if (state.todayRuns > 0 && state.firstRunAt > 0 && Date.now() > state.firstRunAt) {
+      const elapsedSeconds = (Date.now() - state.firstRunAt) / 1000;
+      $('runSpeed').textContent = (state.todayRuns * 3600 / elapsedSeconds).toFixed(1) + '/hr · ' +
+        Math.round(elapsedSeconds / state.todayRuns) + 's/run';
+    } else {
+      $('runSpeed').textContent = '—';
+    }
+
+    $('pityCount').textContent = String(state.pity);
+    document.querySelectorAll('.pip:not(.flash)').forEach((pip, index) => pip.classList.toggle('on', index < state.pity));
+    const ready = state.pity >= PITY_LIMIT;
+    document.querySelector('.pip.flash').classList.toggle('on', ready);
+    const pityMessage = $('pityMessage');
+    pityMessage.classList.toggle('ready', ready);
+    pityMessage.textContent = ready ? 'The next 17-mod attempt is guaranteed to be a Flash mod.' :
+      state.pity === 0 ? 'No consecutive failures recorded.' :
+      (PITY_LIMIT - state.pity) + ' more failure(s) until the next attempt is guaranteed.';
+    $('pityFail').disabled = ready;
+    $('pityUndo').disabled = state.pity === 0;
+    $('totalFailures').textContent = fmt(state.failures);
+    $('successes').textContent = fmt(state.successes);
+    $('flashes').textContent = fmt(state.flashes);
+    $('undo').disabled = !undoState;
+    $('removeDrop').disabled = state.boxes === 0;
+
+    const history = $('history');
+    history.replaceChildren();
+    if (!state.history.length) {
+      const empty = document.createElement('div');
+      empty.className = 'history-item';
+      empty.textContent = 'No drops recorded yet.';
+      history.appendChild(empty);
+    } else {
+      state.history.slice().reverse().forEach((runs, index) => {
+        const row = document.createElement('div');
+        row.className = 'history-item';
+        const label = document.createElement('span');
+        label.textContent = 'Drop #' + (state.boxes - index);
+        const count = document.createElement('span');
+        count.textContent = fmt(runs) + ' runs since previous drop';
+        row.append(label, count);
+        history.appendChild(row);
+      });
+    }
+    $('overlayRunCount').textContent = fmt(state.runs);
+    $('overlayRunGoal').textContent = state.runs >= RUN_GOAL ? '1,000-run goal reached' :
+      fmt(RUN_GOAL - state.runs) + ' runs to 1,000';
+    $('overlayPityCount').textContent = state.pity + ' / ' + PITY_LIMIT;
+    $('overlayPityMessage').textContent = ready ? 'Next attempt guaranteed Flash mod' :
+      state.pity === 0 ? 'No consecutive failures' : (PITY_LIMIT - state.pity) + ' more failures until guarantee';
+    $('overlayBoxCount').textContent = fmt(state.boxes);
+    $('overlayBoxAverage').textContent = state.boxes ? 'Average ' + fmt(Math.round(state.totalRuns / state.boxes)) + ' runs / box' :
+      'Average — runs / box';
+    renderOverlay();
+  }
+
+  function updateTimer() {
+    const newDay = checkDayRollover();
+    const seconds = Math.max(0, Math.floor((Date.now() - state.sessionStartedAt) / 1000));
+    $('elapsed').textContent = [Math.floor(seconds / 3600), Math.floor(seconds % 3600 / 60), seconds % 60]
+      .map(value => String(value).padStart(2, '0')).join(':');
+    if (newDay) render();
+  }
+
+  function addRun(delta) {
+    if (delta < 0 && state.runs === 0) return;
+    snapshot();
+    if (delta > 0) {
+      state.runs += delta;
+      state.totalRuns += delta;
+      state.todayRuns += delta;
+      if (!state.firstRunAt) state.firstRunAt = Date.now();
+      state.best = Math.max(state.best, state.runs);
+    } else {
+      const removed = Math.min(-delta, state.runs);
+      state.runs -= removed;
+      state.totalRuns = Math.max(0, state.totalRuns - removed);
+      state.todayRuns = Math.max(0, state.todayRuns - removed);
+      if (state.todayRuns === 0) state.firstRunAt = 0;
+    }
+    save();
+    render();
+  }
+
+  $('addRun').addEventListener('click', () => addRun(1));
+  $('removeRun').addEventListener('click', () => addRun(-1));
+  $('recordDrop').addEventListener('click', () => {
+    snapshot();
+    state.best = Math.max(state.best, state.runs);
+    state.boxes++;
+    state.history.push(state.runs);
+    state.history = state.history.slice(-100);
+    state.runs = 0;
+    save();
+    render();
+    showNotice('Box drop recorded.');
+  });
+  $('removeDrop').addEventListener('click', () => {
+    if (!state.boxes) return;
+    snapshot();
+    state.boxes--;
+    state.history.pop();
+    save();
+    render();
+    showNotice('Last box drop removed.');
+  });
+  $('pityFail').addEventListener('click', () => {
+    if (state.pity >= PITY_LIMIT) return;
+    snapshot();
+    state.pity++;
+    state.failures++;
+    save();
+    render();
+    if (state.pity === PITY_LIMIT) showNotice('Pity reached: the next attempt is guaranteed to be a Flash mod.');
+  });
+  $('pitySuccess').addEventListener('click', () => {
+    snapshot();
+    state.successes++;
+    state.pity = 0;
+    save();
+    render();
+    showNotice('Success recorded; consecutive failures reset.');
+  });
+  $('pityFlash').addEventListener('click', () => {
+    snapshot();
+    state.flashes++;
+    state.pity = 0;
+    save();
+    render();
+    showNotice('Flash mod recorded; consecutive failures reset.');
+  });
+  $('pityUndo').addEventListener('click', () => {
+    if (!state.pity) return;
+    snapshot();
+    state.pity--;
+    state.failures = Math.max(0, state.failures - 1);
+    save();
+    render();
+  });
+  $('undo').addEventListener('click', () => {
+    if (!undoState) return;
+    state = undoState;
+    undoState = null;
+    save();
+    render();
+  });
+  $('resetTimer').addEventListener('click', () => {
+    state.sessionStartedAt = Date.now();
+    save();
+    updateTimer();
+    showNotice('Session timer reset. Run and drop data was kept.');
+  });
+  $('clearData').addEventListener('click', () => {
+    if (!window.confirm('Clear all run, drop, pity, and session timer data? This cannot be undone.')) return;
+    state = defaults();
+    undoState = null;
+    save();
+    render();
+    updateTimer();
+    showNotice('All tracker data cleared.');
+  });
+
+  $('addQuickButton').addEventListener('click', () => {
+    if (quickAdds.length >= 8) return;
+    quickAdds.push({ label: '', amount: 1 });
+    saveQuickAdds();
+    renderQuickButtons();
+    renderQuickEditor();
+  });
+  $('resetQuickButtons').addEventListener('click', () => {
+    quickAdds = quickDefaults();
+    saveQuickAdds();
+    renderQuickButtons();
+    renderQuickEditor();
+  });
+  renderQuickButtons();
+  renderQuickEditor();
+
+  $('overlayRunsToggle').addEventListener('change', event => {
+    overlaySettings.runs = event.target.checked;
+    saveOverlaySettings();
+    renderOverlay();
+  });
+  $('overlayPityToggle').addEventListener('change', event => {
+    overlaySettings.pity = event.target.checked;
+    saveOverlaySettings();
+    renderOverlay();
+  });
+  $('overlayBoxesToggle').addEventListener('change', event => {
+    overlaySettings.boxes = event.target.checked;
+    saveOverlaySettings();
+    renderOverlay();
+  });
+  document.querySelectorAll('[data-overlay-bg]').forEach(button => {
+    button.addEventListener('click', () => {
+      overlaySettings.background = button.dataset.overlayBg;
+      saveOverlaySettings();
+      renderOverlay();
+    });
+  });
+  $('overlayScale').addEventListener('input', event => {
+    overlaySettings.scale = Number(event.target.value);
+    saveOverlaySettings();
+    renderOverlay();
+  });
+
+  function overlayUrl() {
+    const url = new URL(location.href);
+    url.search = '?overlay=1';
+    url.hash = '';
+    return url.toString();
+  }
+  $('openOverlay').addEventListener('click', () => {
+    const opened = window.open(overlayUrl(), 'run_tracker_overlay', 'popup=yes,width=620,height=240');
+    if (!opened) showNotice('Allow pop-ups to open the overlay window.');
+  });
+  $('copyOverlayUrl').addEventListener('click', () => {
+    const url = overlayUrl();
+    const fallback = () => window.prompt('Copy this OBS overlay URL:', url);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(
+        () => showNotice('OBS overlay URL copied.'),
+        fallback
+      );
+    } else {
+      fallback();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    const target = event.target;
+    if (target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+    if (event.repeat) return;
+    const shortcuts = {
+      F13: () => addRun(1),
+      F14: () => addRun(-1),
+      F15: () => $('recordDrop').click(),
+      F16: () => $('removeDrop').click(),
+      F17: () => $('resetTimer').click(),
+      F18: () => $('undo').click(),
+      F19: () => $('pityFail').click(),
+      F20: () => $('pitySuccess').click()
+    };
+    if (shortcuts[event.key]) {
+      event.preventDefault();
+      shortcuts[event.key]();
+    }
+  });
+
+  window.addEventListener('storage', event => {
+    if (event.key === KEY) {
+      undoState = null;
+      load();
+      render();
+      updateTimer();
+    } else if (event.key === OVERLAY_KEY) {
+      loadOverlaySettings();
+      renderOverlay();
+    }
+  });
+
+  loadOverlaySettings();
+  load();
+  render();
+  updateTimer();
+  setInterval(updateTimer, 1000);
+})();
+</script>
+</body>
+</html>
