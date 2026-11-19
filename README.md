@@ -13,5 +13,16 @@ This project is a personal-use, browser-based tracker for Once Human daily event
 4. Use the controls on each page to view and monitor its timers and counters.
 5. If you want Dissonant Resonance timer notifications, allow browser notifications when prompted.
 
+## Run locally with HTTP Server
+
+If you have Node.js and npm installed:
+
+```bash
+npm install
+npm start
+```
+
+Then open [http://localhost:8080](http://localhost:8080) in your browser. The server is automatically stopped with `Ctrl+C`.
+
 ## Credits
 This project is a modified version to fully meet the my personal requirements. All original source material and credit remain with the original Once Human Riftwalker tracker at  [https://tool.oncehumanjp.com/](https://tool.oncehumanjp.com/).
