@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <meta name="description" content="A collection of Once Human event timers and trackers.">
+  <title>Once Human Trackers</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080b14;
+      --panel: rgba(15, 21, 35, .82);
+      --line: rgba(105, 235, 255, .18);
+      --cyan: #66f2ff;
+      --pink: #ff5ddd;
+      --text: #edf5ff;
+      --muted: #9aa9be;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(19, 91, 125, .22), transparent 50%),
+        radial-gradient(ellipse at 95% 55%, rgba(132, 38, 118, .12), transparent 38%),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(102, 242, 255, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102, 242, 255, .035) 1px, transparent 1px);
+      background-size: 48px 48px;
+      content: "";
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+      pointer-events: none;
+    }
+
+    .shell {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 82px;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--text);
+      font-size: .86rem;
+      font-weight: 750;
+      letter-spacing: .14em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border: 1px solid rgba(102, 242, 255, .6);
+      border-radius: 9px;
+      color: var(--cyan);
+      box-shadow: 0 0 18px rgba(102, 242, 255, .18), inset 0 0 14px rgba(102, 242, 255, .12);
+      font-size: 1.1rem;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .header-note, .eyebrow {
+      color: var(--cyan);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .header-note { color: var(--muted); letter-spacing: .12em; }
+
+    main { padding: 82px 0 66px; }
+
+    .hero {
+      max-width: 760px;
+      margin: 0 auto 55px;
+      text-align: center;
+    }
+
+    .eyebrow { margin: 0 0 17px; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      font-weight: 850;
+      letter-spacing: -.065em;
+      line-height: .98;
+    }
+
+    h1 span {
+      color: var(--cyan);
+      text-shadow: 0 0 28px rgba(102, 242, 255, .38);
+    }
+
+    .intro {
+      max-width: 580px;
+      margin: 23px auto 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.75;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 19px;
+      color: #d7e3f2;
+      font-size: .75rem;
+      font-weight: 750;
+      letter-spacing: .17em;
+      text-transform: uppercase;
+    }
+
+    .section-heading::after {
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, rgba(102, 242, 255, .25), transparent);
+      content: "";
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .tool-card {
+      position: relative;
+      display: flex;
+      min-height: 330px;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: linear-gradient(150deg, rgba(22, 32, 51, .92), var(--panel) 62%);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, .2);
+      transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    }
+
+    .tool-card::before {
+      position: absolute;
+      top: 0;
+      left: 25px;
+      width: 48px;
+      height: 2px;
+      background: var(--accent, var(--cyan));
+      box-shadow: 0 0 14px var(--accent, var(--cyan));
+      content: "";
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent, var(--cyan)) 55%, transparent);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .32), 0 0 25px rgba(102, 242, 255, .06);
+    }
+
+    .tool-card.pink { --accent: var(--pink); }
+
+    .icon {
+      display: grid;
+      width: 49px;
+      height: 49px;
+      margin-bottom: 24px;
+      place-items: center;
+      border: 1px solid color-mix(in srgb, var(--accent, var(--cyan)) 40%, transparent);
+      border-radius: 13px;
+      background: color-mix(in srgb, var(--accent, var(--cyan)) 9%, transparent);
+      color: var(--accent, var(--cyan));
+      font-size: 1.35rem;
+      line-height: 1;
+      text-align: center;
+      text-shadow: 0 0 15px currentColor;
+    }
+
+    .tool-type {
+      margin: 0 0 9px;
+      color: var(--accent, var(--cyan));
+      font-size: .65rem;
+      font-weight: 750;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.22rem;
+      letter-spacing: -.025em;
+    }
+
+    .description {
+      margin: 12px 0 18px;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.65;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 0 0 23px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .features li {
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 100px;
+      color: #bdc9d8;
+      font-size: .69rem;
+    }
+
+    .launch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding: 12px 14px;
+      border: 1px solid color-mix(in srgb, var(--accent, var(--cyan)) 42%, transparent);
+      border-radius: 9px;
+      color: var(--text);
+      font-size: .79rem;
+      font-weight: 750;
+      text-decoration: none;
+      transition: background .2s ease, box-shadow .2s ease;
+    }
+
+    .launch:hover, .launch:focus-visible {
+      background: color-mix(in srgb, var(--accent, var(--cyan)) 13%, transparent);
+      box-shadow: 0 0 18px color-mix(in srgb, var(--accent, var(--cyan)) 16%, transparent);
+    }
+
+    .launch span:last-child { color: var(--accent, var(--cyan)); font-size: 1rem; }
+
+    .note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .note::before {
+      width: 7px;
+      height: 7px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 11px var(--cyan);
+      content: "";
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 21px 0 27px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      color: #738197;
+      font-size: .72rem;
+    }
+
+    footer a { color: #aab8ca; text-decoration-color: rgba(170, 184, 202, .4); }
+    a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+
+    @media (max-width: 850px) {
+      .tools { grid-template-columns: 1fr 1fr; }
+      .tool-card:last-child { grid-column: 1 / -1; min-height: 290px; }
+    }
+
+    @media (max-width: 580px) {
+      .shell { width: min(100% - 30px, 430px); }
+      header { min-height: 70px; }
+      .header-note { font-size: .58rem; }
+      main { padding: 64px 0 48px; }
+      .hero { margin-bottom: 43px; }
+      .intro { font-size: .94rem; }
+      .tools { grid-template-columns: 1fr; }
+      .tool-card, .tool-card:last-child { grid-column: auto; min-height: 310px; }
+      footer { flex-direction: column; gap: 9px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="./" aria-label="Tracker Tools home">
+        <span class="brand-mark" aria-hidden="true">🥖</span>
+        <span>Tracker Tools</span>
+      </a>
+      <!-- <span class="header-note">Once Human · Community Tools</span> -->
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Field Operations // Toolkit</p>
+        <h1 id="page-title">Track the <span>anomaly.</span></h1>
+        <p class="intro">Timers, counters, and run data for your Once Human adventures. Pick a tool and get back in the field.</p>
+      </section>
+
+      <section aria-labelledby="tools-heading">
+        <h2 class="section-heading" id="tools-heading">Available tools</h2>
+        <div class="tools">
+          <article class="tool-card">
+            <div class="icon" aria-hidden="true">⌁</div>
+            <p class="tool-type">Event tracker</p>
+            <h2>Riftwalker Timer (Ended)</h2>
+            <p class="description">Keep tabs on Riftwalker activity and key event counters with a dedicated field dashboard.</p>
+            <ul class="features">
+              <li>Spawn countdown</li>
+              <li>Event counters</li>
+            </ul>
+            <a class="launch" href="OH%20Timer.html">
+              <span>Open Timer</span><span aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="tool-card pink">
+            <div class="icon" aria-hidden="true">◉</div>
+            <p class="tool-type">Event timer</p>
+            <h2>Dissonant Resonance</h2>
+            <p class="description">Check the event status and countdown so you know when the next resonance is due.</p>
+            <ul class="features">
+              <li>Event status</li>
+              <li>Live countdown</li>
+            </ul>
+            <a class="launch" href="Atonal%20Resonance%20Timer.html">
+              <span>Open timer</span><span aria-hidden="true">↗</span>
+            </a>
+          </article>
+
+          <article class="tool-card">
+            <div class="icon" aria-hidden="true">⌖</div>
+            <p class="tool-type">Run tracker</p>
+            <h2>Run Tracker</h2>
+            <p class="description">Log runs and drops, follow your pace, and keep an eye on the Flash mod pity counter.</p>
+            <ul class="features">
+              <li>Drop history</li>
+              <li>17-mod pity</li>
+              <li>Run statistics</li>
+            </ul>
+            <a class="launch" href="Run%20Tracker.html">
+              <span>Open tracker</span><span aria-hidden="true">↗</span>
+            </a>
+          </article>
+        </div>
+        <p class="note">Your preferences and tracker data are saved locally in your browser.</p>
+      </section>
+    </main>
+
+    <footer>
+      <span>Independent personal-use tools for Once Human.</span>
+      <span>Game resources and original ideas credit: <a href="https://tool.oncehumanjp.com/">META CORE</a></span>
+    </footer>
+  </div>
+</body>
+</html>
