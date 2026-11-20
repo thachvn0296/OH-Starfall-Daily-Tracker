@@ -26,15 +26,36 @@ h1{margin:12px 0 24px;text-align:center;font-size:clamp(1.7rem,6vw,3rem);line-he
 .unit{width:min(40%,260px);padding:24px 12px 18px;text-align:center;border:1px solid rgba(255,173,50,.3);border-radius:18px;background:linear-gradient(180deg,rgba(255,150,50,.12),rgba(60,25,14,.12));box-shadow:inset 0 0 22px rgba(255,173,50,.04)}
 .value{font-size:clamp(3.2rem,14vw,7.2rem);font-weight:900;line-height:1;color:#fff0d4;text-shadow:0 0 25px rgba(255,164,58,.28);font-variant-numeric:tabular-nums}
 .label{margin-top:8px;color:#c39b6a;font-size:.7rem;letter-spacing:.2em}
+.boss-panel{width:min(100%,430px);margin:20px auto 0;padding:14px 18px 12px;border:1px solid rgba(255,173,50,.3);border-radius:14px;background:rgba(255,120,28,.07);text-align:center}
+.boss-status{color:#ffd69a;font-size:1.15rem;font-weight:700;letter-spacing:.08em}
+.boss-clock{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:7px;color:#fff0d4;font-size:3.25rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.boss-clock.hidden{display:none}
+.boss-clock .boss-label{margin-left:4px;color:#c39b6a;font-size:.58rem;letter-spacing:.12em}
+.boss-clock.unlocked{color:#ffb08c}
+.echo-counter{width:min(100%,430px);margin:20px auto 0;padding:14px 18px;border:1px solid rgba(255,173,50,.3);border-radius:14px;background:rgba(255,120,28,.07);text-align:center;align-self:center}
+.echo-counter-title{color:#ffd69a;font-size:1.15rem;font-weight:700;letter-spacing:.08em}
+.echo-counter-controls{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:10px}
+.echo-counter-btn{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,173,50,.5);background:rgba(255,173,50,.08);color:#ffe0a3;font-family:'Teko',sans-serif;font-size:1.5rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.echo-counter-btn:active{transform:scale(.9)}
+.echo-counter-btn:hover{background:rgba(255,173,50,.2);box-shadow:0 0 10px rgba(255,173,50,.25)}
+.echo-counter-value{min-width:90px;color:#fff0d4;font-size:3.25rem;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 0 15px rgba(255,173,50,.35)}
+.echo-counter.max-reached{border-color:rgba(255,180,0,.8);background:linear-gradient(180deg,rgba(255,150,0,.18),rgba(70,40,0,.22));box-shadow:0 0 24px rgba(255,150,0,.28)}
+.echo-counter.max-reached .echo-counter-value{color:#ffe6a3;text-shadow:0 0 15px #ffaa00,0 0 30px #ffaa00}
+.echo-reset-btn{min-width:150px;margin:14px auto 0;padding:8px 14px;border:1px solid #ff314a;border-radius:8px;background:rgba(255,49,74,.12);color:#fff1f3;font:700 .9rem 'Teko',sans-serif;letter-spacing:.08em;cursor:pointer;box-shadow:0 0 10px rgba(255,49,74,.5),inset 0 0 8px rgba(255,49,74,.12);text-shadow:0 0 8px #ff314a;transition:.2s}
+.echo-reset-btn:hover{background:rgba(255,49,74,.25);box-shadow:0 0 16px rgba(255,49,74,.8),inset 0 0 10px rgba(255,49,74,.18)}
+.echo-reset-btn:active{transform:scale(.96)}
 .error{min-height:1.5em;margin-top:12px;color:#ff9e9e;text-align:center;font: .8rem 'Teko',sans-serif}
-@media(max-width:520px){body{padding:12px}.page{padding:78px 16px 24px;border-radius:20px}.top{top:10px;left:10px;right:10px}.top a,.notify{padding:8px 10px;font-size:.62rem}.unit{padding:20px 8px 16px}.clock{gap:8px}}
+.page-footer{position:fixed;left:0;right:0;bottom:0;z-index:1200;text-align:center;padding:10px 16px 12px;font-size:.72rem;color:rgba(255,255,255,.72);letter-spacing:.04em;line-height:1.5;text-shadow:0 0 8px rgba(0,0,0,.6);background:rgba(0,0,0,.28);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.12)}
+.page-footer a{border:0;padding:0;background:none;color:#8fefff;font:inherit;letter-spacing:inherit}
+.page-footer a:hover{background:none;text-decoration:underline}
+@media(max-width:520px){body{padding:12px}.page{padding:78px 16px 24px;border-radius:20px}.top{top:10px;left:10px;right:10px}.top a,.notify{padding:8px 10px;font-size:.62rem}.unit{padding:20px 8px 16px}.clock{gap:8px}.boss-status,.echo-counter-title{font-size:.95rem}.boss-clock,.echo-counter-value{font-size:2.65rem}}
 </style>
 </head>
 <body>
 <main class="page">
   <nav class="top" aria-label="Pages">
-    <a href="OH%20Timer.html">Abyss Timer (ENDED)</a>
-    <a href="Run%20Tracker.html">Run Tracker</a>
+    <a href="S4-Starfall-Gravity-Abyss.html">Abyss Timer (ENDED)</a>
+    <a href="Run-Tracker.html">Run Tracker</a>
     <button class="notify" id="notifyToggle" type="button" aria-pressed="false">Alerts OFF</button>
   </nav>
   <div class="content">
@@ -44,22 +65,40 @@ h1{margin:12px 0 24px;text-align:center;font-size:clamp(1.7rem,6vw,3rem);line-he
       <div class="unit"><div class="value" id="minutes">00</div><div class="label">MIN</div></div>
       <div class="unit"><div class="value" id="seconds">00</div><div class="label">SEC</div></div>
     </div>
+    <section class="echo-counter" id="echoCounter" aria-label="Echo War counter">
+      <div class="echo-counter-title">The Echo War</div>
+      <div class="echo-counter-controls">
+        <button class="echo-counter-btn" id="echoDecrease" type="button" aria-label="Decrease Echo War count">-</button>
+        <div class="echo-counter-value" id="echoCount" aria-live="polite">0 / 80</div>
+        <button class="echo-counter-btn" id="echoIncrease" type="button" aria-label="Increase Echo War count">+</button>
+      </div>
+      <button class="echo-reset-btn" id="echoReset" type="button">Reset Counter</button>
+    </section>
+    <section class="boss-panel" aria-label="Boss unlock timer">
+      <div class="boss-status" id="bossStatus">Getting ready to fight!</div>
+      <div class="boss-clock" id="bossClock">
+        <span id="bossMinutes">--</span><span>:</span><span id="bossSeconds">--</span><span class="boss-label">MIN : SEC</span>
+      </div>
+    </section>
     <div class="error" id="message" role="status"></div>
   </div>
 </main>
 <script>
 (() => {
   'use strict';
-  const EVENT_START = 15 * 60 - 37;
-  const EVENT_END = 45 * 60 - 37;
-  const BATTLE_START = 30 * 60 - 37;
+  const EVENT_START = 15 * 60 - 1;
+  const EVENT_END = 45 * 60 - 1;
+  const BATTLE_START = 30 * 60 - 1;
   const STORAGE_KEY = 'ohStarfall.atonalAlerts';
+  const ECHO_COUNTER_KEY = 'ohStarfall.echoWarCount';
+  const ECHO_COUNTER_CAP = 80;
   const $ = id => document.getElementById(id);
   const status = $('status');
   const notifyButton = $('notifyToggle');
   const message = $('message');
   let alertsEnabled = false;
   let notified = new Set();
+  let echoWarCount = 0;
 
   try {
     alertsEnabled = localStorage.getItem(STORAGE_KEY) === 'true';
@@ -84,6 +123,34 @@ h1{margin:12px 0 24px;text-align:center;font-size:clamp(1.7rem,6vw,3rem);line-he
     if (left >= windowSeconds - 2 && left <= windowSeconds) notifyOnce(key, hour, title, body);
   }
 
+  function updateEchoCounter() {
+    $('echoCount').textContent = echoWarCount + ' / ' + ECHO_COUNTER_CAP;
+    $('echoCounter').classList.toggle('max-reached', echoWarCount >= ECHO_COUNTER_CAP);
+  }
+
+  function changeEchoCount(amount) {
+    const nextCount = echoWarCount + amount;
+    echoWarCount = Math.max(0, Math.min(ECHO_COUNTER_CAP, nextCount));
+    try {
+      localStorage.setItem(ECHO_COUNTER_KEY, String(echoWarCount));
+    } catch (error) {
+      console.error('Could not save the Echo War count:', error);
+      message.textContent = 'Could not save the Echo War count in this browser.';
+    }
+    updateEchoCounter();
+  }
+
+  try {
+    echoWarCount = Math.max(0, Math.min(ECHO_COUNTER_CAP, parseInt(localStorage.getItem(ECHO_COUNTER_KEY), 10) || 0));
+  } catch (error) {
+    console.error('Could not load the Echo War count:', error);
+  }
+
+  $('echoDecrease').addEventListener('click', () => changeEchoCount(-1));
+  $('echoIncrease').addEventListener('click', () => changeEchoCount(1));
+  $('echoReset').addEventListener('click', () => changeEchoCount(-echoWarCount));
+  updateEchoCounter();
+
   function update() {
     const now = new Date();
     const current = now.getMinutes() * 60 + now.getSeconds() + now.getMilliseconds() / 1000;
@@ -101,14 +168,34 @@ h1{margin:12px 0 24px;text-align:center;font-size:clamp(1.7rem,6vw,3rem);line-he
     $('minutes').textContent = String(Math.floor(displayRemaining / 60)).padStart(2, '0');
     $('seconds').textContent = String(displayRemaining % 60).padStart(2, '0');
 
+    const echoWarClosing = active && current >= BATTLE_START;
+    $('bossClock').classList.toggle('unlocked', echoWarClosing);
+
+    if (!active) {
+      $('bossStatus').textContent = 'Getting ready to fight!';
+      $('bossClock').classList.add('hidden');
+    } else if (echoWarClosing) {
+      const closingRemaining = Math.max(0, Math.ceil(eventEndLeft));
+      $('bossStatus').textContent = 'The Echo War is closing in';
+      $('bossClock').classList.remove('hidden');
+      $('bossMinutes').textContent = String(Math.floor(closingRemaining / 60)).padStart(2, '0');
+      $('bossSeconds').textContent = String(closingRemaining % 60).padStart(2, '0');
+    } else {
+      const startingRemaining = Math.max(0, Math.ceil(battleLeft));
+      $('bossStatus').textContent = 'The Echo War will start in';
+      $('bossClock').classList.remove('hidden');
+      $('bossMinutes').textContent = String(Math.floor(startingRemaining / 60)).padStart(2, '0');
+      $('bossSeconds').textContent = String(startingRemaining % 60).padStart(2, '0');
+    }
+
     const eventHour = active ? hourStamp : nextEventHour;
     checkAlert(eventLeft, 300, 'event-5m', nextEventHour, 'Dissonant Resonance', 'Starts in 5 minutes.');
     checkAlert(eventLeft, 60, 'event-1m', nextEventHour, 'Dissonant Resonance', 'Starts in 1 minute.');
     if (active && current >= EVENT_START && current <= EVENT_START + 2) notifyOnce('event-start', hourStamp, 'Dissonant Resonance', 'The event has started.');
     checkAlert(eventEndLeft, 60, 'event-end-1m', eventHour, 'Dissonant Resonance', 'Ends in 1 minute.');
-    checkAlert(battleLeft, 180, 'battle-3m', hourStamp, 'Resonance Battle', 'Starts in 3 minutes.');
-    checkAlert(battleLeft, 60, 'battle-1m', hourStamp, 'Resonance Battle', 'Starts in 1 minute.');
-    if (active && current >= BATTLE_START && current <= BATTLE_START + 2) notifyOnce('battle-start', hourStamp, 'Resonance Battle', 'The battle has started.');
+    checkAlert(battleLeft, 180, 'battle-3m', hourStamp, 'The Echo War', 'Starts in 3 minutes.');
+    checkAlert(battleLeft, 60, 'battle-1m', hourStamp, 'The Echo War', 'Starts in 1 minute.');
+    if (active && current >= BATTLE_START && current <= BATTLE_START + 2) notifyOnce('battle-start', hourStamp, 'The Echo War', 'The Echo War has started.');
   }
 
   notifyButton.addEventListener('click', async () => {
@@ -150,5 +237,9 @@ h1{margin:12px 0 24px;text-align:center;font-size:clamp(1.7rem,6vw,3rem);line-he
   });
 })();
 </script>
+<footer class="page-footer">
+  This is a modified version created for personal use. All original source material and credit remain with
+  <a href="https://tool.oncehumanjp.com/" target="_blank" rel="noopener noreferrer">https://tool.oncehumanjp.com/</a>
+</footer>
 </body>
 </html>

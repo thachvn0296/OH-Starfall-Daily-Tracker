@@ -2,7 +2,7 @@ This project is a personal-use collection of browser-based trackers for Once Hum
 
 ## Available features
 
-### Once Human Riftwalker Tracker
+### S4-Starfall-Gravity-Abyss
 - Gravity Abyss countdown
 - Riftwalker spawn status and countdown
 - Aerial Hunt, Riftwalker Relic, and Broken Relic counters
@@ -21,9 +21,9 @@ This project is a personal-use collection of browser-based trackers for Once Hum
 - Locally saved tracker data
 
 ## How to use
-1. Open [OH Timer.html](OH%20Timer.html) in your browser; or you can use this [Live Web Page](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/OH%20Timer.html).
-2. Open [Dissonant Resonance Timer.html](Atonal%20Resonance%20Timer.html) for the Dissonant Resonance event countdown, or use the [live timer page](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/Atonal%20Resonance%20Timer.html).
-3. Open [Run Tracker.html](Run%20Tracker.html) to track runs, box drops, 17-mod pity, daily pace, editable run increments, and keyboard shortcuts, or use the [live run tracker](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/Run%20Tracker.html).
+1. Open [S4-Starfall-Gravity-Abyss.html](S4-Starfall-Gravity-Abyss.html) in your browser; or you can use this [Live Web Page](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/S4-Starfall-Gravity-Abyss.html).
+2. Open [S5-Dissonant-Resonance-Timer.html](S5-Dissonant-Resonance-Timer.html) for the Dissonant Resonance event countdown, or use the [live timer page](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/S5-Dissonant-Resonance-Timer.html).
+3. Open [Run-Tracker.html](Run-Tracker.html) to track runs, box drops, 17-mod pity, daily pace, editable run increments, and keyboard shortcuts, or use the [live run tracker](https://thachvn0296.github.io/OH-Starfall-Daily-Tracker/Run-Tracker.html).
 4. Use the controls on each page to view and monitor its timers and counters.
 
 ## Run locally with HTTP Server
