@@ -74,13 +74,16 @@
       width: 31px;
       height: 31px;
       place-items: center;
-      border: 1px solid rgba(102, 242, 255, .6);
+      overflow: hidden;
+      /* border: 1px solid rgba(102, 242, 255, .6); */
       border-radius: 9px;
-      color: var(--cyan);
       box-shadow: 0 0 18px rgba(102, 242, 255, .18), inset 0 0 14px rgba(102, 242, 255, .12);
-      font-size: 1.1rem;
-      line-height: 1;
-      text-align: center;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .header-note, .eyebrow {
@@ -317,7 +320,9 @@
   <div class="shell">
     <header>
       <a class="brand" href="./" aria-label="Tracker Tools home">
-        <span class="brand-mark" aria-hidden="true">🥖</span>
+        <span class="brand-mark" aria-hidden="true">
+          <img src="assets/others/baguetty-logo.png" alt="">
+        </span>
         <span>Tracker Tools</span>
       </a>
       <!-- <span class="header-note">Once Human · Community Tools</span> -->
