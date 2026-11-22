@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +19,9 @@
       --muted: #9aa9be;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       min-height: 100vh;
@@ -86,7 +89,8 @@
       object-fit: cover;
     }
 
-    .header-note, .eyebrow {
+    .header-note,
+    .eyebrow {
       color: var(--cyan);
       font-size: .72rem;
       font-weight: 700;
@@ -94,9 +98,14 @@
       text-transform: uppercase;
     }
 
-    .header-note { color: var(--muted); letter-spacing: .12em; }
+    .header-note {
+      color: var(--muted);
+      letter-spacing: .12em;
+    }
 
-    main { padding: 82px 0 66px; }
+    main {
+      padding: 82px 0 66px;
+    }
 
     .hero {
       max-width: 760px;
@@ -104,7 +113,9 @@
       text-align: center;
     }
 
-    .eyebrow { margin: 0 0 17px; }
+    .eyebrow {
+      margin: 0 0 17px;
+    }
 
     h1 {
       margin: 0;
@@ -183,7 +194,9 @@
       box-shadow: 0 18px 48px rgba(0, 0, 0, .32), 0 0 25px rgba(102, 242, 255, .06);
     }
 
-    .tool-card.pink { --accent: var(--pink); }
+    .tool-card.pink {
+      --accent: var(--pink);
+    }
 
     .icon {
       display: grid;
@@ -199,6 +212,11 @@
       line-height: 1;
       text-align: center;
       text-shadow: 0 0 15px currentColor;
+    }
+
+    .icon .mini-logo {
+      width: 42px;
+      height: 42px;
     }
 
     .tool-type {
@@ -255,12 +273,16 @@
       transition: background .2s ease, box-shadow .2s ease;
     }
 
-    .launch:hover, .launch:focus-visible {
+    .launch:hover,
+    .launch:focus-visible {
       background: color-mix(in srgb, var(--accent, var(--cyan)) 13%, transparent);
       box-shadow: 0 0 18px color-mix(in srgb, var(--accent, var(--cyan)) 16%, transparent);
     }
 
-    .launch span:last-child { color: var(--accent, var(--cyan)); font-size: 1rem; }
+    .launch span:last-child {
+      color: var(--accent, var(--cyan));
+      font-size: 1rem;
+    }
 
     .note {
       display: flex;
@@ -291,31 +313,80 @@
       font-size: .72rem;
     }
 
-    footer a { color: #aab8ca; text-decoration-color: rgba(170, 184, 202, .4); }
-    a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+    footer a {
+      color: #aab8ca;
+      text-decoration-color: rgba(170, 184, 202, .4);
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
+    }
 
     @media (max-width: 850px) {
-      .tools { grid-template-columns: 1fr 1fr; }
-      .tool-card:last-child { grid-column: 1 / -1; min-height: 290px; }
+      .tools {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tool-card:last-child {
+        grid-column: 1 / -1;
+        min-height: 290px;
+      }
     }
 
     @media (max-width: 580px) {
-      .shell { width: min(100% - 30px, 430px); }
-      header { min-height: 70px; }
-      .header-note { font-size: .58rem; }
-      main { padding: 64px 0 48px; }
-      .hero { margin-bottom: 43px; }
-      .intro { font-size: .94rem; }
-      .tools { grid-template-columns: 1fr; }
-      .tool-card, .tool-card:last-child { grid-column: auto; min-height: 310px; }
-      footer { flex-direction: column; gap: 9px; }
+      .shell {
+        width: min(100% - 30px, 430px);
+      }
+
+      header {
+        min-height: 70px;
+      }
+
+      .header-note {
+        font-size: .58rem;
+      }
+
+      main {
+        padding: 64px 0 48px;
+      }
+
+      .hero {
+        margin-bottom: 43px;
+      }
+
+      .intro {
+        font-size: .94rem;
+      }
+
+      .tools {
+        grid-template-columns: 1fr;
+      }
+
+      .tool-card,
+      .tool-card:last-child {
+        grid-column: auto;
+        min-height: 310px;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 9px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="shell">
     <header>
@@ -332,17 +403,20 @@
       <section class="hero" aria-labelledby="page-title">
         <p class="eyebrow">Field Operations // Toolkit</p>
         <h1 id="page-title">Track the <span>anomaly.</span></h1>
-        <p class="intro">Timers, counters, and run data for your Once Human adventures. Pick a tool and get back in the field.</p>
+        <p class="intro">Timers, counters, and run data for your Once Human adventures. Pick a tool and get back in the
+          field.</p>
       </section>
 
       <section aria-labelledby="tools-heading">
         <h2 class="section-heading" id="tools-heading">Available tools</h2>
         <div class="tools">
           <article class="tool-card">
-            <div class="icon" aria-hidden="true">⌁</div>
-            <p class="tool-type">Event tracker</p>
+            <div class="icon" aria-hidden="true"><img src="assets/others/gravity-crystal.png" alt="Starfall Timer"
+                class="mini-logo"></div>
+            <p class="tool-type">Event timer</p>
             <h2>S4 Starfall Gravity Abyss (Ended)</h2>
-            <p class="description">Keep tabs on Riftwalker activity and key event counters with a dedicated field dashboard.</p>
+            <p class="description">Keep tabs on Riftwalker activity and key event counters with a dedicated field
+              dashboard.</p>
             <ul class="features">
               <li>Spawn countdown</li>
               <li>Event counters</li>
@@ -353,7 +427,8 @@
           </article>
 
           <article class="tool-card pink">
-            <div class="icon" aria-hidden="true">◉</div>
+            <div class="icon" aria-hidden="true"><img src="assets/others/dissonant-dust.png" alt="Dissonant Timer"
+                class="mini-logo"></div>
             <p class="tool-type">Event timer</p>
             <h2>Dissonant Resonance</h2>
             <p class="description">Check the event status and countdown so you know when the next resonance is due.</p>
@@ -367,10 +442,12 @@
           </article>
 
           <article class="tool-card">
-            <div class="icon" aria-hidden="true">⌖</div>
+            <div class="icon" aria-hidden="true"><img src="assets/others/mod-dust.png" alt="Run Tracker"
+                class="mini-logo"></div>
             <p class="tool-type">Run tracker</p>
             <h2>Run Tracker</h2>
-            <p class="description">Log runs and drops, follow your pace, and keep an eye on the Flash mod pity counter.</p>
+            <p class="description">Log runs and drops, follow your pace, and keep an eye on the Flash mod pity counter.
+            </p>
             <ul class="features">
               <li>Drop history</li>
               <li>17-mod pity</li>
@@ -391,4 +468,5 @@
     </footer>
   </div>
 </body>
+
 </html>
