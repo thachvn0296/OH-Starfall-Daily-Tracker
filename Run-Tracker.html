@@ -69,7 +69,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px;ma
 .pity-actions .fail{border-color:rgba(255,102,120,.3);background:rgba(255,102,120,.08)}
 .pity-actions .flash-action{grid-column:1/-1;border-color:rgba(255,181,61,.3);background:rgba(255,181,61,.08);color:#ffe2a6}
 button:disabled{opacity:.42;cursor:not-allowed}
-.pity-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;text-align:center}
+.pity-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px;text-align:center}
 .pity-stats span{display:block;color:var(--sub);font-size:.95rem}
 .pity-stats b{display:block;margin-top:6px;font-weight:700}
 .notice{min-height:1.4em;margin-top:12px;color:var(--sub);font-size:1rem}
@@ -154,13 +154,14 @@ body.overlay-mode .overlay-view[data-bg="green"]{min-height:100vh;min-width:100v
       <div class="pity-message" id="pityMessage" aria-live="polite">No consecutive failures recorded.</div>
       <div class="pity-actions">
         <button id="pityFail" class="fail" type="button">✕ Failure +1</button>
-        <button id="pitySuccess" type="button">Success · reset</button>
-        <button id="pityFlash" class="flash-action" type="button">⚡ Flash mod · reset</button>
         <button id="pityUndo" class="quiet" type="button">− 1 failure</button>
+        <button id="pitySuccess" type="button" hidden>Success · reset</button>
+        <button id="pityFlash" class="flash-action" type="button">⚡ Flash mod · reset</button>
+        
       </div>
       <div class="pity-stats">
         <div><span>Total failures</span><b id="totalFailures">0</b></div>
-        <div><span>Successes</span><b id="successes">0</b></div>
+        <div style="display:none"><span>Successes</span><b id="successes">0</b></div>
         <div><span>Flash mods</span><b id="flashes">0</b></div>
       </div>
       <div class="notice" id="notice" role="status" aria-live="polite"></div>
